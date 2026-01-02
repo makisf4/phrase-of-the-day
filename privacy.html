@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Πολιτική Απορρήτου - Η Φράση της Ημέρας που Σε Περιγράφει">
+    <title>Πολιτική Απορρήτου - Η Φράση της Ημέρας</title>
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --bg2: #f5f6f8;
+            --text: #0a0a0a;
+            --muted: #64748b;
+            --card: rgba(255, 255, 255, 0.92);
+            --card2: rgba(255, 255, 255, 0.85);
+            --border: rgba(226, 232, 240, 0.6);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+            --radius: 24px;
+            --max: 720px;
+            --pad: 1.5rem;
+            --accent: #111827;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0e1a;
+                --bg2: #0f1419;
+                --text: #f8fafc;
+                --muted: #94a3b8;
+                --card: rgba(26, 31, 46, 0.88);
+                --card2: rgba(26, 31, 46, 0.82);
+                --border: rgba(45, 55, 72, 0.5);
+                --shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.2);
+                --accent: #1f2937;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            padding: 2.5rem var(--pad);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(37, 99, 235, 0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 70%, rgba(139, 92, 246, 0.03) 0%, transparent 60%),
+                linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: var(--max);
+            margin: 0 auto;
+            position: relative;
+            padding: 0 var(--pad);
+        }
+
+        .content {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 3rem 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            margin-bottom: 2rem;
+            color: var(--text);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.375rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 0.9375rem;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--muted);
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 3.5rem var(--pad);
+            }
+
+            .content {
+                padding: 4rem 3rem;
+            }
+
+            h1 {
+                font-size: 2.75rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.875rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Επιστροφή</a>
+        
+        <div class="content">
+            <h1>Πολιτική Απορρήτου</h1>
+
+            <h2>Γενικές Πληροφορίες</h2>
+            <p>
+                Η παρούσα Πολιτική Απορρήτου περιγράφει τον τρόπο με τον οποίο η ιστοσελίδα "Η Φράση της Ημέρας που Σε Περιγράφει" 
+                συλλέγει, χρησιμοποιεί και προστατεύει τα δεδομένα των επισκεπτών της.
+            </p>
+            <p>
+                Αυτή η ιστοσελίδα είναι ένα στατικό site χωρίς backend, χωρίς λογαριασμούς χρηστών και χωρίς φόρμες. 
+                Δεν συλλέγουμε προσωπικά δεδομένα μέσω φορμών ή καταγραφών.
+            </p>
+
+            <h2>Ποια δεδομένα συλλέγονται</h2>
+            <p>
+                <strong>Δεν συλλέγουμε προσωπικά δεδομένα.</strong> Η ιστοσελίδα λειτουργεί ως static site και δεν διαθέτει 
+                backend server, βάση δεδομένων ή σύστημα αποθήκευσης δεδομένων.
+            </p>
+            <p>
+                Το μόνο που μπορεί να αποθηκευτεί τοπικά στη συσκευή σου είναι μέσω του <code>localStorage</code> του browser 
+                (για παράδειγμα, για την παρακολούθηση συνεχόμενων επισκέψεων). Αυτά τα δεδομένα δεν αποστέλλονται σε server 
+                και παραμένουν αποκλειστικά στη συσκευή σου.
+            </p>
+            <p>
+                Ο server hosting (Vercel) μπορεί να καταγράφει τυπικά server logs (IP addresses, timestamps) για τεχνικούς 
+                σκοπούς, σύμφωνα με την πολιτική απορρήτου του hosting provider.
+            </p>
+
+            <h2>Cookies & Διαφημίσεις</h2>
+            <p>
+                Αυτή τη στιγμή η ιστοσελίδα δεν χρησιμοποιεί cookies ή tracking scripts. 
+                Στο μέλλον, ενδέχεται να προστεθούν διαφημίσεις μέσω Google AdSense.
+            </p>
+            <p>
+                Αν προστεθούν διαφημίσεις, η Google AdSense μπορεί να χρησιμοποιήσει cookies για την προσωποποίηση 
+                διαφημίσεων. Σε αυτή την περίπτωση, θα ενημερωθεί η παρούσα πολιτική απορρήτου και θα ενημερωθείς 
+                για τα cookies που χρησιμοποιούνται.
+            </p>
+            <p>
+                Μπορείς να διαχειριστείς τα cookies μέσω των ρυθμίσεων του browser σου.
+            </p>
+
+            <h2>Τρίτες Υπηρεσίες</h2>
+            <p>
+                Η ιστοσελίδα φιλοξενείται στο <strong>Vercel</strong>. Για πληροφορίες σχετικά με την πολιτική απορρήτου 
+                του Vercel, μπορείς να επισκεφτείς την επίσημη ιστοσελίδα τους.
+            </p>
+            <p>
+                Αν προστεθούν διαφημίσεις στο μέλλον, η <strong>Google AdSense</strong> μπορεί να συλλέγει δεδομένα 
+                σύμφωνα με τη δική της πολιτική απορρήτου. Σε αυτή την περίπτωση, θα ενημερωθείς μέσω της παρούσας 
+                πολιτικής απορρήτου.
+            </p>
+
+            <h2>Επικοινωνία</h2>
+            <p>
+                Για οποιαδήποτε ερώτηση σχετικά με την πολιτική απορρήτου, μπορείς να επικοινωνήσεις μέσω του GitHub 
+                repository αυτού του project ή μέσω των καναλιών επικοινωνίας που μπορεί να διαθέτει ο δημιουργός της ιστοσελίδας.
+            </p>
+            <p>
+                <strong>Τελευταία ενημέρωση:</strong> Ιανουάριος 2026
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+
