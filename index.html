@@ -1299,8 +1299,12 @@
         // Prevent double rendering
         window.__phraseRendered = false;
 
-        // Consent-aware phrase display
-        async function initPhraseDisplay() {
+        // Render phrase (called after consent granted)
+        function renderPhrase() {
+            if (window.__phraseRendered) {
+                return;
+            }
+
             const today = new Date();
             const todayKey = getDateKey(today);
             const dailyPhrase = getPhraseForDate(todayKey);
@@ -1310,61 +1314,43 @@
             const displayDate = formatDateForDisplay(today);
             sectionTitle.textContent = `Η σημερινή φράση (${displayDate})`;
             
-            // Check if user already has consent
-            if (window.__hasConsentForPhrase && window.__hasConsentForPhrase()) {
-                // User has consent - show phrase immediately
-                document.getElementById('consent-gate').style.display = 'none';
-                document.getElementById('phrase-fallback').style.display = 'none';
-                document.getElementById('phrase-container').style.display = 'block';
-                document.getElementById('phrase-content').style.display = 'block';
-                
-                // Update streak
-                const streak = updateStreak();
-                const streakLine = document.getElementById('streakLine');
-                if (streak && streak > 0) {
-                    streakLine.textContent = `🔥 Συνεχόμενες επισκέψεις: ${streak} ${streak === 1 ? 'ημέρα' : 'ημέρες'}`;
-                } else {
-                    streakLine.style.display = 'none';
-                }
-                
-                setTimeout(() => {
-                    showPhrase(dailyPhrase, true);
-                    window.__phraseRendered = true;
-                }, 900);
+            // Update streak
+            const streak = updateStreak();
+            const streakLine = document.getElementById('streakLine');
+            if (streak && streak > 0) {
+                streakLine.textContent = `🔥 Συνεχόμενες επισκέψεις: ${streak} ${streak === 1 ? 'ημέρα' : 'ημέρες'}`;
             } else {
-                // No consent - wait for user decision
-                document.getElementById('consent-gate').style.display = 'block';
-                document.getElementById('phrase-container').style.display = 'none';
-                document.getElementById('phrase-fallback').style.display = 'none';
-                
-                // Wait for consent decision (8 seconds timeout)
-                const hasConsent = await (window.__waitForConsentDecision ? window.__waitForConsentDecision(8000) : Promise.resolve(false));
-                
-                if (hasConsent) {
-                    // User granted consent - show phrase
-                    document.getElementById('consent-gate').style.display = 'none';
-                    document.getElementById('phrase-fallback').style.display = 'none';
-                    document.getElementById('phrase-container').style.display = 'block';
-                    document.getElementById('phrase-content').style.display = 'block';
-                    
-                    // Update streak
-                    const streak = updateStreak();
-                    const streakLine = document.getElementById('streakLine');
-                    if (streak && streak > 0) {
-                        streakLine.textContent = `🔥 Συνεχόμενες επισκέψεις: ${streak} ${streak === 1 ? 'ημέρα' : 'ημέρες'}`;
-                    } else {
-                        streakLine.style.display = 'none';
-                    }
-                    
-                    setTimeout(() => {
-                        showPhrase(dailyPhrase, true);
-                        window.__phraseRendered = true;
-                    }, 300);
-                } else {
-                    // User denied or timeout - keep gate visible
-                    // Gate is already visible, no action needed
-                }
+                streakLine.style.display = 'none';
             }
+            
+            // Show phrase container and content
+            document.getElementById('consent-gate').style.display = 'none';
+            document.getElementById('phrase-fallback').style.display = 'none';
+            document.getElementById('phrase-container').style.display = 'block';
+            document.getElementById('phrase-content').style.display = 'block';
+            
+            // Show phrase with reveal animation
+            setTimeout(() => {
+                showPhrase(dailyPhrase, true);
+                window.__phraseRendered = true;
+            }, 300);
+        }
+
+        // Show fallback (called after consent denied)
+        function showFallback() {
+            document.getElementById('consent-gate').style.display = 'none';
+            document.getElementById('phrase-container').style.display = 'block';
+            document.getElementById('phrase-fallback').style.display = 'block';
+            document.getElementById('phrase-content').style.display = 'none';
+        }
+
+        // Initial phrase display setup
+        function initPhraseDisplay() {
+            // Initial state: show gate, hide phrase
+            // Cookiebot will fire events if consent was already given
+            document.getElementById('consent-gate').style.display = 'block';
+            document.getElementById('phrase-container').style.display = 'none';
+            document.getElementById('phrase-fallback').style.display = 'none';
             
             // Share button
             document.getElementById('shareBtn').addEventListener('click', () => {
@@ -1373,67 +1359,48 @@
             
             // Skip phrase button
             document.getElementById('skipPhraseBtn').addEventListener('click', () => {
-                document.getElementById('consent-gate').style.display = 'none';
-                document.getElementById('phrase-container').style.display = 'block';
-                document.getElementById('phrase-fallback').style.display = 'block';
-                document.getElementById('phrase-content').style.display = 'none';
+                showFallback();
             });
         }
         
-        // Handle consent updates (when user changes settings)
-        function handleConsentUpdate() {
-            if (window.__hasConsentForPhrase && window.__hasConsentForPhrase()) {
-                // Consent granted - show phrase
-                if (!window.__phraseRendered) {
-                    const today = new Date();
-                    const todayKey = getDateKey(today);
-                    const dailyPhrase = getPhraseForDate(todayKey);
-                    
-                    document.getElementById('consent-gate').style.display = 'none';
-                    document.getElementById('phrase-fallback').style.display = 'none';
-                    document.getElementById('phrase-container').style.display = 'block';
-                    document.getElementById('phrase-content').style.display = 'block';
-                    
-                    // Update section title with date
-                    const sectionTitle = document.getElementById('sectionTitle');
-                    const displayDate = formatDateForDisplay(today);
-                    sectionTitle.textContent = `Η σημερινή φράση (${displayDate})`;
-                    
-                    // Update streak
-                    const streak = updateStreak();
-                    const streakLine = document.getElementById('streakLine');
-                    if (streak && streak > 0) {
-                        streakLine.textContent = `🔥 Συνεχόμενες επισκέψεις: ${streak} ${streak === 1 ? 'ημέρα' : 'ημέρες'}`;
-                    } else {
-                        streakLine.style.display = 'none';
-                    }
-                    
-                    showPhrase(dailyPhrase, false);
-                    window.__phraseRendered = true;
-                } else {
-                    // Already rendered, just ensure visibility
-                    document.getElementById('consent-gate').style.display = 'none';
-                    document.getElementById('phrase-fallback').style.display = 'none';
-                    document.getElementById('phrase-container').style.display = 'block';
-                    document.getElementById('phrase-content').style.display = 'block';
-                }
-            } else {
-                // Consent revoked - hide phrase, show gate
-                document.getElementById('phrase-content').style.display = 'none';
-                document.getElementById('phrase-fallback').style.display = 'none';
-                document.getElementById('phrase-container').style.display = 'none';
-                document.getElementById('consent-gate').style.display = 'block';
-                window.__phraseRendered = false;
-            }
+        // Handle consent granted (from CookiebotOnAccept event)
+        function handleConsentGranted() {
+            renderPhrase();
         }
+
+        // Handle consent denied (from CookiebotOnDecline event)
+        function handleConsentDenied() {
+            showFallback();
+            window.__phraseRendered = false;
+        }
+
+        // Safari hard reset: if Cookiebot not initialized after 3s, show fallback
+        setTimeout(() => {
+            if (!window.Cookiebot) {
+                console.warn('Cookiebot not initialized after 3s - showing fallback');
+                showFallback();
+            }
+        }, 3000);
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             initBackground();
             initPhraseDisplay();
             
-            // Listen for consent updates
-            window.addEventListener('cmp:consent-updated', handleConsentUpdate);
+            // Listen for Cookiebot events
+            window.addEventListener('CookiebotOnAccept', handleConsentGranted);
+            window.addEventListener('CookiebotOnDecline', handleConsentDenied);
+            
+            // Also listen for TCF events (for ads.js compatibility)
+            window.addEventListener('cmp:consent-updated', () => {
+                // Re-check on TCF updates (for ads.js)
+                if (window.Cookiebot && window.Cookiebot.consent && 
+                    (window.Cookiebot.consent.preferences || window.Cookiebot.consent.statistics || window.Cookiebot.consent.marketing)) {
+                    handleConsentGranted();
+                } else {
+                    handleConsentDenied();
+                }
+            });
         });
     </script>
 </body>
