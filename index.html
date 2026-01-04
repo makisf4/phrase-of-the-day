@@ -719,6 +719,36 @@
                 border-top: 1px solid #e5e7eb !important;
             }
         }
+
+        /* Consent Gate Styling */
+        .consent-gate {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 0 var(--pad);
+        }
+
+        .consent-gate .card {
+            margin-top: 2rem;
+        }
+
+        .consent-gate h3 {
+            color: var(--text);
+        }
+
+        .consent-gate .actions {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 480px) {
+            .consent-gate .actions {
+                flex-direction: column;
+            }
+
+            .consent-gate .actions button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body class="app">
@@ -731,18 +761,50 @@
         </header>
 
         <main class="content">
-            <section class="section">
-                <h2 id="sectionTitle" class="section-title">Η σημερινή φράση</h2>
+            <!-- Consent Gate (shown when no marketing consent) -->
+            <div id="consent-gate" class="consent-gate" style="display: none;">
                 <div class="card card--primary">
-                    <div class="phrase-box" id="phraseBox">
-                        <div class="loading" id="loading">
-                            Περίμενε<span class="loading-dots"><span></span><span></span><span></span></span>
-                        </div>
-                        <div class="phrase" id="phrase"></div>
+                    <h3 style="font-size: 1.25rem; margin-bottom: 1rem; text-align: center;">Για να δεις τη Φράση της Ημέρας</h3>
+                    <p style="text-align: center; margin-bottom: 1.5rem; color: var(--muted);">
+                        Επίλεξε "Αποδοχή" ή "Επιλογή" και ενεργοποίησε τα Marketing cookies.
+                    </p>
+                    <div class="actions" style="justify-content: center; gap: 0.75rem;">
+                        <button onclick="window.__openCMP && window.__openCMP(); return false;" class="btn--primary">Ρυθμίσεις cookies</button>
+                        <button id="skipPhraseBtn" class="btn--secondary">Συνέχεια χωρίς φράση</button>
                     </div>
-                    <div class="streak-line" id="streakLine"></div>
-                    <div class="actions">
-                        <button id="shareBtn" class="btn--primary" data-btn-share>Share</button>
+                </div>
+            </div>
+
+            <!-- Phrase Container (hidden until consent) -->
+            <section id="phrase-container" class="section" style="display: none;">
+                <h2 id="sectionTitle" class="section-title">Η σημερινή φράση</h2>
+                
+                <!-- Fallback message (shown when user skips phrase) -->
+                <div id="phrase-fallback" class="consent-gate" style="display: none;">
+                    <div class="card card--primary">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 1rem; text-align: center;">Χωρίς cookies (προς το παρόν)</h3>
+                        <p style="text-align: center; margin-bottom: 1.5rem; color: var(--muted);">
+                            Μπορείς να δεις τη Φράση της Ημέρας αν ενεργοποιήσεις Preferences ή Statistics ή Marketing cookies από τις Ρυθμίσεις cookies.
+                        </p>
+                        <div class="actions" style="justify-content: center;">
+                            <button onclick="window.__openCMP && window.__openCMP(); return false;" class="btn--primary">Ρυθμίσεις cookies</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actual phrase content (hidden when fallback is shown) -->
+                <div id="phrase-content" style="display: none;">
+                    <div class="card card--primary">
+                        <div class="phrase-box" id="phraseBox">
+                            <div class="loading" id="loading">
+                                Περίμενε<span class="loading-dots"><span></span><span></span><span></span></span>
+                            </div>
+                            <div class="phrase" id="phrase"></div>
+                        </div>
+                        <div class="streak-line" id="streakLine"></div>
+                        <div class="actions">
+                            <button id="shareBtn" class="btn--primary" data-btn-share>Share</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1234,10 +1296,11 @@
             tryLoadImage(0, 0);
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            initBackground();
-            
+        // Prevent double rendering
+        window.__phraseRendered = false;
+
+        // Consent-aware phrase display
+        async function initPhraseDisplay() {
             const today = new Date();
             const todayKey = getDateKey(today);
             const dailyPhrase = getPhraseForDate(todayKey);
@@ -1247,24 +1310,130 @@
             const displayDate = formatDateForDisplay(today);
             sectionTitle.textContent = `Η σημερινή φράση (${displayDate})`;
             
-            // Update streak
-            const streak = updateStreak();
-            const streakLine = document.getElementById('streakLine');
-            if (streak && streak > 0) {
-                streakLine.textContent = `🔥 Συνεχόμενες επισκέψεις: ${streak} ${streak === 1 ? 'ημέρα' : 'ημέρες'}`;
+            // Check if user already has consent
+            if (window.__hasConsentForPhrase && window.__hasConsentForPhrase()) {
+                // User has consent - show phrase immediately
+                document.getElementById('consent-gate').style.display = 'none';
+                document.getElementById('phrase-fallback').style.display = 'none';
+                document.getElementById('phrase-container').style.display = 'block';
+                document.getElementById('phrase-content').style.display = 'block';
+                
+                // Update streak
+                const streak = updateStreak();
+                const streakLine = document.getElementById('streakLine');
+                if (streak && streak > 0) {
+                    streakLine.textContent = `🔥 Συνεχόμενες επισκέψεις: ${streak} ${streak === 1 ? 'ημέρα' : 'ημέρες'}`;
+                } else {
+                    streakLine.style.display = 'none';
+                }
+                
+                setTimeout(() => {
+                    showPhrase(dailyPhrase, true);
+                    window.__phraseRendered = true;
+                }, 900);
             } else {
-                streakLine.style.display = 'none';
+                // No consent - wait for user decision
+                document.getElementById('consent-gate').style.display = 'block';
+                document.getElementById('phrase-container').style.display = 'none';
+                document.getElementById('phrase-fallback').style.display = 'none';
+                
+                // Wait for consent decision (8 seconds timeout)
+                const hasConsent = await (window.__waitForConsentDecision ? window.__waitForConsentDecision(8000) : Promise.resolve(false));
+                
+                if (hasConsent) {
+                    // User granted consent - show phrase
+                    document.getElementById('consent-gate').style.display = 'none';
+                    document.getElementById('phrase-fallback').style.display = 'none';
+                    document.getElementById('phrase-container').style.display = 'block';
+                    document.getElementById('phrase-content').style.display = 'block';
+                    
+                    // Update streak
+                    const streak = updateStreak();
+                    const streakLine = document.getElementById('streakLine');
+                    if (streak && streak > 0) {
+                        streakLine.textContent = `🔥 Συνεχόμενες επισκέψεις: ${streak} ${streak === 1 ? 'ημέρα' : 'ημέρες'}`;
+                    } else {
+                        streakLine.style.display = 'none';
+                    }
+                    
+                    setTimeout(() => {
+                        showPhrase(dailyPhrase, true);
+                        window.__phraseRendered = true;
+                    }, 300);
+                } else {
+                    // User denied or timeout - keep gate visible
+                    // Gate is already visible, no action needed
+                }
             }
-            
-            // Show phrase after delay
-            setTimeout(() => {
-                showPhrase(dailyPhrase, true);
-            }, 900);
             
             // Share button
             document.getElementById('shareBtn').addEventListener('click', () => {
                 shareUrl();
             });
+            
+            // Skip phrase button
+            document.getElementById('skipPhraseBtn').addEventListener('click', () => {
+                document.getElementById('consent-gate').style.display = 'none';
+                document.getElementById('phrase-container').style.display = 'block';
+                document.getElementById('phrase-fallback').style.display = 'block';
+                document.getElementById('phrase-content').style.display = 'none';
+            });
+        }
+        
+        // Handle consent updates (when user changes settings)
+        function handleConsentUpdate() {
+            if (window.__hasConsentForPhrase && window.__hasConsentForPhrase()) {
+                // Consent granted - show phrase
+                if (!window.__phraseRendered) {
+                    const today = new Date();
+                    const todayKey = getDateKey(today);
+                    const dailyPhrase = getPhraseForDate(todayKey);
+                    
+                    document.getElementById('consent-gate').style.display = 'none';
+                    document.getElementById('phrase-fallback').style.display = 'none';
+                    document.getElementById('phrase-container').style.display = 'block';
+                    document.getElementById('phrase-content').style.display = 'block';
+                    
+                    // Update section title with date
+                    const sectionTitle = document.getElementById('sectionTitle');
+                    const displayDate = formatDateForDisplay(today);
+                    sectionTitle.textContent = `Η σημερινή φράση (${displayDate})`;
+                    
+                    // Update streak
+                    const streak = updateStreak();
+                    const streakLine = document.getElementById('streakLine');
+                    if (streak && streak > 0) {
+                        streakLine.textContent = `🔥 Συνεχόμενες επισκέψεις: ${streak} ${streak === 1 ? 'ημέρα' : 'ημέρες'}`;
+                    } else {
+                        streakLine.style.display = 'none';
+                    }
+                    
+                    showPhrase(dailyPhrase, false);
+                    window.__phraseRendered = true;
+                } else {
+                    // Already rendered, just ensure visibility
+                    document.getElementById('consent-gate').style.display = 'none';
+                    document.getElementById('phrase-fallback').style.display = 'none';
+                    document.getElementById('phrase-container').style.display = 'block';
+                    document.getElementById('phrase-content').style.display = 'block';
+                }
+            } else {
+                // Consent revoked - hide phrase, show gate
+                document.getElementById('phrase-content').style.display = 'none';
+                document.getElementById('phrase-fallback').style.display = 'none';
+                document.getElementById('phrase-container').style.display = 'none';
+                document.getElementById('consent-gate').style.display = 'block';
+                window.__phraseRendered = false;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initBackground();
+            initPhraseDisplay();
+            
+            // Listen for consent updates
+            window.addEventListener('cmp:consent-updated', handleConsentUpdate);
         });
     </script>
 </body>

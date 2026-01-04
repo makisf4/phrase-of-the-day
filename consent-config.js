@@ -104,22 +104,80 @@
 
     /**
      * Open CMP consent preferences dialog
+     * Async version with polling to wait for Cookiebot to be ready
      */
-    window.__openCMP = function() {
-        // Preferred: Cookiebot native API
-        if (window.Cookiebot && typeof window.Cookiebot.renew === 'function') {
-            window.Cookiebot.renew();
-            return;
+    window.__openCMP = async function () {
+        const start = Date.now();
+
+        while (Date.now() - start < 3500) {
+            if (window.Cookiebot && typeof window.Cookiebot.renew === 'function') {
+                window.Cookiebot.renew();
+                return;
+            }
+
+            if (typeof window.__tcfapi === 'function') {
+                window.__tcfapi('displayConsentUi', 2, function () {});
+                return;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
 
-        // Fallback: try TCF API if available
-        if (typeof window.__tcfapi === 'function') {
-            window.__tcfapi('displayConsentUi', 2, function () {});
-            return;
-        }
+        alert('Οι ρυθμίσεις cookies δεν είναι ακόμη διαθέσιμες. Κάνε refresh και δοκίμασε ξανά.');
+    };
 
-        // Final fallback
-        alert('Οι ρυθμίσεις cookies φορτώνονται. Δοκίμασε ξανά σε λίγο.');
+    /**
+     * Check if user has consented to any non-necessary cookies (required for phrase display)
+     * Requires: Preferences OR Statistics OR Marketing
+     * 
+     * @returns {boolean} true if any non-necessary consent granted, false otherwise
+     */
+    window.__hasConsentForPhrase = function() {
+        try {
+            const c = window.Cookiebot && window.Cookiebot.consent;
+            if (!c) return false;
+            return c.preferences === true || c.statistics === true || c.marketing === true;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    /**
+     * Wait for user to make a consent decision
+     * 
+     * @param {number} timeoutMs - Maximum time to wait in milliseconds (default: 8000)
+     * @returns {Promise<boolean>} true if any non-necessary consent granted, false if denied or timeout
+     */
+    window.__waitForConsentDecision = function(timeoutMs = 8000) {
+        return new Promise((resolve) => {
+            const start = Date.now();
+
+            const checkConsent = () => {
+                // Check if Cookiebot has consent object populated
+                if (window.Cookiebot && window.Cookiebot.consent) {
+                    // User has made a decision - check if any non-necessary consent granted
+                    if (window.__hasConsentForPhrase()) {
+                        resolve(true);
+                        return;
+                    } else {
+                        // Decision made but no non-necessary consent granted
+                        resolve(false);
+                        return;
+                    }
+                }
+
+                // Check timeout
+                if (Date.now() - start >= timeoutMs) {
+                    resolve(false);
+                    return;
+                }
+
+                // Continue polling
+                setTimeout(checkConsent, 100);
+            };
+
+            checkConsent();
+        });
     };
 
     /**
