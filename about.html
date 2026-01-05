@@ -176,18 +176,33 @@
         #CybotCookiebotDialog {
             font-size: 0.6875rem !important;
             max-width: 500px !important;
+            max-height: 92vh !important;
             margin: 0 auto !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
             right: auto !important;
+            overflow: hidden !important;
+            position: fixed !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
 
         #CybotCookiebotDialogBody {
             padding: 0.5rem 0.75rem !important;
+            max-height: 75vh !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            flex: 1 1 auto !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
 
         #CybotCookiebotDialogBodyContent {
             padding: 0.375rem 0.5rem !important;
+            flex: 1 1 auto !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
         }
 
         #CybotCookiebotDialogBodyTitle {
@@ -216,6 +231,13 @@
             margin-top: 0.375rem !important;
             flex-wrap: wrap !important;
             gap: 0.125rem !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* Ensure footer/buttons stay visible */
+        #CybotCookiebotDialogFooter {
+            padding-bottom: 12px !important;
+            flex-shrink: 0 !important;
         }
 
         #CybotCookiebotDialogBodyLevel {
@@ -307,13 +329,13 @@
             height: auto !important;
         }
 
-        /* Ensure Cookiebot dialog itself can scroll within viewport */
-        #CybotCookiebotDialog,
-        #CybotCookiebotDialogBody,
-        #CybotCookiebotDialogBodyContent {
-            max-height: 100vh !important;
-            overflow-y: auto !important;
-            -webkit-overflow-scrolling: touch;
+        /* Ensure parent containers don't break fixed positioning */
+        .container,
+        .content,
+        main {
+            transform: none !important;
+            filter: none !important;
+            perspective: none !important;
         }
     </style>
 </head>
