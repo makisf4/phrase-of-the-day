@@ -64,6 +64,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 16px;
             line-height: 1.6;
             color: var(--text);
             background: var(--bg);
@@ -140,7 +141,7 @@
         }
 
         .hero h1 {
-            font-size: clamp(2.25rem, 5.5vw, 3.5rem);
+            font-size: clamp(34px, 5vw, 72px);
             margin-bottom: 1.25rem;
             color: rgba(255, 255, 255, 0.92);
             font-weight: 800;
@@ -153,7 +154,7 @@
         }
 
         .hero .subtext {
-            font-size: 0.9375rem;
+            font-size: clamp(14px, 1.6vw, 20px);
             color: rgba(255, 255, 255, 0.78);
             font-style: italic;
             font-weight: 400;
@@ -176,7 +177,7 @@
         }
 
         .section h2 {
-            font-size: 0.9375rem;
+            font-size: clamp(12px, 1.2vw, 16px);
             margin-bottom: 1.75rem;
             margin-top: 0;
             color: rgba(255, 255, 255, 0.78);
@@ -194,7 +195,7 @@
             background: var(--card);
             border-radius: var(--radius);
             border: 1px solid var(--border);
-            padding: 2.75rem;
+            padding: clamp(1.5rem, 3vw, 2.75rem);
             margin-bottom: 0;
             box-shadow: var(--shadow);
             backdrop-filter: blur(20px) saturate(180%);
@@ -260,7 +261,7 @@
         }
 
         .phrase {
-            font-size: clamp(1.5rem, 3.5vw, 2.125rem);
+            font-size: clamp(20px, 3.5vw, 34px);
             line-height: 1.5;
             text-align: center;
             color: var(--text);
@@ -792,48 +793,81 @@
         /* === Cookiebot hardening: isolate from site typography scaling === */
         /* Prevent vw/clamp font-size from affecting Cookiebot */
         #CybotCookiebotDialog,
-        #CybotCookiebotDialog * {
+        #CybotCookiebotDialog *,
+        .CybotCookiebotDialog,
+        .CybotCookiebotDialog * {
             font-size: 14px !important;
             line-height: 1.35 !important;
         }
 
-        #CybotCookiebotDialog {
-            max-width: min(720px, calc(100vw - 24px)) !important;
-            width: auto !important;
-        }
-
-        #CybotCookiebotDialogBody {
-            max-height: min(75vh, 640px) !important;
-            overflow: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-        }
-
-        /* === Cookiebot hard-fix: keep dialog in viewport across Safari/Brave === */
-        /* Maximum z-index to ensure dialog is always on top */
+        /* === Cookiebot dialog constraints: always in viewport, centered, scrollable === */
         #CybotCookiebotDialog,
-        #CybotCookiebotDialogBody,
-        #CybotCookiebotDialogBodyUnderlay {
-            z-index: 2147483647 !important;
-        }
-
-        /* Hard reset: force fixed positioning at bottom, remove transforms */
-        #CybotCookiebotDialog {
+        .CybotCookiebotDialog {
             position: fixed !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            top: auto !important;
+            inset: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 2147483647 !important;
+            max-width: 100vw !important;
             max-height: 100vh !important;
+            overflow: hidden !important;
             transform: none !important;
             -webkit-transform: none !important;
             margin: 0 !important;
+            padding: 12px !important;
+        }
+
+        #CybotCookiebotDialogBody,
+        .CybotCookiebotDialogBody {
+            max-width: min(720px, calc(100vw - 24px)) !important;
+            max-height: calc(100vh - 24px) !important;
+            width: auto !important;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            border-radius: 12px !important;
+        }
+
+        #CybotCookiebotDialogBodyContent,
+        .CybotCookiebotDialogBodyContent {
+            max-height: calc(100vh - 200px) !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            flex: 1 1 auto !important;
+        }
+
+        /* Ensure buttons/footer are always visible */
+        #CybotCookiebotDialogBodyButtons,
+        #CybotCookiebotDialogFooter,
+        .CybotCookiebotDialogBodyButtons,
+        .CybotCookiebotDialogFooter {
+            flex-shrink: 0 !important;
+            position: sticky !important;
+            bottom: 0 !important;
         }
 
         /* Underlay must cover entire screen */
-        #CybotCookiebotDialogBodyUnderlay {
+        #CybotCookiebotDialogBodyUnderlay,
+        .CybotCookiebotDialogBodyUnderlay {
             position: fixed !important;
             inset: 0 !important;
             z-index: 2147483646 !important;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            #CybotCookiebotDialog,
+            .CybotCookiebotDialog {
+                padding: 8px !important;
+            }
+
+            #CybotCookiebotDialogBody,
+            .CybotCookiebotDialogBody {
+                max-width: calc(100vw - 16px) !important;
+                max-height: calc(100vh - 16px) !important;
+            }
         }
 
         /* Fallback for any Cookiebot element with ID starting with CybotCookiebotDialog */
@@ -1404,34 +1438,52 @@
 
         // Cleanup overlays and unlock clicks
         function cleanupOverlays() {
+            // Check if Cookiebot dialog is currently open
+            const dialog = document.getElementById('CybotCookiebotDialog') || document.querySelector('.CybotCookiebotDialog');
+            const isDialogOpen = dialog && window.getComputedStyle(dialog).display !== 'none';
+
             // Hide our gate and disable pointer events
             const gateEl = document.getElementById('consent-gate');
             if (gateEl) {
                 gateEl.style.display = 'none';
                 gateEl.style.pointerEvents = 'none';
+                gateEl.style.zIndex = '-1';
             }
             const fallbackEl = document.getElementById('phrase-fallback');
             if (fallbackEl) {
                 fallbackEl.style.pointerEvents = 'auto';
             }
 
-            // Remove Cookiebot overlay after short delay
+            // Remove Cookiebot overlay after short delay (only if dialog is closed)
             setTimeout(() => {
-                const overlay = document.getElementById('CybotCookiebotDialogBodyUnderlay');
-                if (overlay) {
-                    overlay.style.display = 'none';
-                    overlay.style.pointerEvents = 'none';
+                if (!isDialogOpen) {
+                    const overlay = document.getElementById('CybotCookiebotDialogBodyUnderlay') || 
+                                   document.querySelector('.CybotCookiebotDialogBodyUnderlay');
+                    if (overlay) {
+                        overlay.style.display = 'none';
+                        overlay.style.pointerEvents = 'none';
+                        overlay.style.zIndex = '-1';
+                    }
+                    
+                    // Unlock body/html overflow only if dialog is not open
+                    document.documentElement.style.overflow = '';
+                    document.body.style.overflow = '';
+                    document.body.style.overflowX = 'hidden';
+                    document.body.style.position = '';
+                    document.body.style.pointerEvents = '';
+                    
+                    // Remove any Cookiebot active classes that might lock scrolling
+                    document.documentElement.classList.remove('CookiebotDialogActive', 'CybotCookiebotDialogActive');
+                    document.body.classList.remove('CookiebotDialogActive', 'CybotCookiebotDialogActive');
                 }
-                
-                // Unlock body/html overflow
-                document.documentElement.style.overflow = '';
-                document.body.style.overflow = '';
-                document.body.style.position = '';
-                
-                // Remove any Cookiebot active classes that might lock scrolling
-                document.documentElement.classList.remove('CookiebotDialogActive');
-                document.body.classList.remove('CookiebotDialogActive');
-            }, 50);
+
+                // Ensure footer links are always clickable
+                const footerLinks = document.querySelectorAll('footer a');
+                footerLinks.forEach(link => {
+                    link.style.pointerEvents = 'auto';
+                    link.style.zIndex = '10';
+                });
+            }, 100);
         }
 
         // Render phrase (called after consent granted)
@@ -1555,14 +1607,35 @@
             });
         }
         
+        // Smooth scroll handler for anchor links (Safari fix)
+        function handleAnchorClick(e) {
+            const href = e.currentTarget.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const targetId = href.substring(1);
+                const target = document.getElementById(targetId) || document.querySelector(`[name="${targetId}"]`);
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        }
+
         // Handle consent granted (from CookiebotOnAccept event)
         function handleConsentGranted() {
             updateUIFromConsent();
+            cleanupOverlays();
         }
 
         // Handle consent denied (from CookiebotOnDecline event)
         function handleConsentDenied() {
             updateUIFromConsent();
+            cleanupOverlays();
         }
 
         // Safari hard reset: if Cookiebot not initialized after 3s, show fallback
@@ -1588,11 +1661,24 @@
             // Listen for Cookiebot events
             window.addEventListener('CookiebotOnAccept', handleConsentGranted);
             window.addEventListener('CookiebotOnDecline', handleConsentDenied);
+            window.addEventListener('CookiebotOnLoad', () => {
+                cleanupOverlays();
+            });
             
             // Also listen for TCF events (for ads.js compatibility)
             window.addEventListener('cmp:consent-updated', () => {
                 updateUIFromConsent();
+                cleanupOverlays();
             });
+
+            // Add smooth scroll handlers to footer links (for anchor links)
+            const footerLinks = document.querySelectorAll('footer a[href^="#"]');
+            footerLinks.forEach(link => {
+                link.addEventListener('click', handleAnchorClick);
+            });
+
+            // Run cleanup once after page load
+            setTimeout(cleanupOverlays, 500);
         });
     </script>
 </body>
