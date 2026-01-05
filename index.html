@@ -6,6 +6,7 @@
     <meta name="description" content="Η καθημερινή φράση που σε περιγράφει. Χωρίς motivation, μόνο αναγνώριση.">
     <meta property="og:locale" content="el_GR">
     <link rel="canonical" href="https://www.kratagera.gr/">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>Η Φράση της Ημέρας που Σε Περιγράφει</title>
     
     <!-- Cookiebot CMP -->
@@ -788,6 +789,25 @@
             perspective: none !important;
         }
 
+        /* === Cookiebot hardening: isolate from site typography scaling === */
+        /* Prevent vw/clamp font-size from affecting Cookiebot */
+        #CybotCookiebotDialog,
+        #CybotCookiebotDialog * {
+            font-size: 14px !important;
+            line-height: 1.35 !important;
+        }
+
+        #CybotCookiebotDialog {
+            max-width: min(720px, calc(100vw - 24px)) !important;
+            width: auto !important;
+        }
+
+        #CybotCookiebotDialogBody {
+            max-height: min(75vh, 640px) !important;
+            overflow: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
         /* === Cookiebot hard-fix: keep dialog in viewport across Safari/Brave === */
         /* Maximum z-index to ensure dialog is always on top */
         #CybotCookiebotDialog,
@@ -807,15 +827,6 @@
             transform: none !important;
             -webkit-transform: none !important;
             margin: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-
-        /* Ensure dialog body can scroll internally */
-        #CybotCookiebotDialogBody {
-            max-height: 100vh !important;
-            overflow: auto !important;
-            -webkit-overflow-scrolling: touch !important;
         }
 
         /* Underlay must cover entire screen */
@@ -1391,9 +1402,42 @@
         // Prevent double rendering
         window.__phraseRendered = false;
 
+        // Cleanup overlays and unlock clicks
+        function cleanupOverlays() {
+            // Hide our gate and disable pointer events
+            const gateEl = document.getElementById('consent-gate');
+            if (gateEl) {
+                gateEl.style.display = 'none';
+                gateEl.style.pointerEvents = 'none';
+            }
+            const fallbackEl = document.getElementById('phrase-fallback');
+            if (fallbackEl) {
+                fallbackEl.style.pointerEvents = 'auto';
+            }
+
+            // Remove Cookiebot overlay after short delay
+            setTimeout(() => {
+                const overlay = document.getElementById('CybotCookiebotDialogBodyUnderlay');
+                if (overlay) {
+                    overlay.style.display = 'none';
+                    overlay.style.pointerEvents = 'none';
+                }
+                
+                // Unlock body/html overflow
+                document.documentElement.style.overflow = '';
+                document.body.style.overflow = '';
+                document.body.style.position = '';
+                
+                // Remove any Cookiebot active classes that might lock scrolling
+                document.documentElement.classList.remove('CookiebotDialogActive');
+                document.body.classList.remove('CookiebotDialogActive');
+            }, 50);
+        }
+
         // Render phrase (called after consent granted)
         function renderPhrase() {
             if (window.__phraseRendered) {
+                cleanupOverlays();
                 return;
             }
 
@@ -1416,10 +1460,28 @@
             }
             
             // Show phrase container and content
-            document.getElementById('consent-gate').style.display = 'none';
-            document.getElementById('phrase-fallback').style.display = 'none';
-            document.getElementById('phrase-container').style.display = 'block';
-            document.getElementById('phrase-content').style.display = 'block';
+            const gateEl = document.getElementById('consent-gate');
+            const fallbackEl = document.getElementById('phrase-fallback');
+            const containerEl = document.getElementById('phrase-container');
+            const contentEl = document.getElementById('phrase-content');
+            
+            if (gateEl) {
+                gateEl.style.display = 'none';
+                gateEl.style.pointerEvents = 'none';
+            }
+            if (fallbackEl) {
+                fallbackEl.style.display = 'none';
+                fallbackEl.style.pointerEvents = 'none';
+            }
+            if (containerEl) {
+                containerEl.style.display = 'block';
+            }
+            if (contentEl) {
+                contentEl.style.display = 'block';
+            }
+            
+            // Cleanup overlays
+            cleanupOverlays();
             
             // Show phrase with reveal animation
             setTimeout(() => {
@@ -1430,19 +1492,57 @@
 
         // Show fallback (called after consent denied)
         function showFallback() {
-            document.getElementById('consent-gate').style.display = 'none';
-            document.getElementById('phrase-container').style.display = 'block';
-            document.getElementById('phrase-fallback').style.display = 'block';
-            document.getElementById('phrase-content').style.display = 'none';
+            const gateEl = document.getElementById('consent-gate');
+            const containerEl = document.getElementById('phrase-container');
+            const fallbackEl = document.getElementById('phrase-fallback');
+            const contentEl = document.getElementById('phrase-content');
+            
+            if (gateEl) {
+                gateEl.style.display = 'none';
+                gateEl.style.pointerEvents = 'none';
+            }
+            if (containerEl) {
+                containerEl.style.display = 'block';
+            }
+            if (fallbackEl) {
+                fallbackEl.style.display = 'block';
+                fallbackEl.style.pointerEvents = 'auto';
+            }
+            if (contentEl) {
+                contentEl.style.display = 'none';
+            }
+            
+            cleanupOverlays();
+        }
+
+        // Update UI based on Cookiebot consent state
+        function updateUIFromConsent() {
+            if (!window.Cookiebot || !window.Cookiebot.consent) {
+                return;
+            }
+
+            const c = window.Cookiebot.consent;
+            const hasNonNecessary = !!(c.preferences || c.statistics || c.marketing);
+
+            if (hasNonNecessary) {
+                renderPhrase();
+            } else {
+                showFallback();
+                window.__phraseRendered = false;
+            }
         }
 
         // Initial phrase display setup
         function initPhraseDisplay() {
-            // Initial state: show gate, hide phrase
-            // Cookiebot will fire events if consent was already given
-            document.getElementById('consent-gate').style.display = 'block';
-            document.getElementById('phrase-container').style.display = 'none';
-            document.getElementById('phrase-fallback').style.display = 'none';
+            // Check if Cookiebot already has consent decision
+            if (window.Cookiebot && window.Cookiebot.consent) {
+                updateUIFromConsent();
+            } else {
+                // Initial state: show gate, hide phrase
+                document.getElementById('consent-gate').style.display = 'block';
+                document.getElementById('phrase-container').style.display = 'none';
+                document.getElementById('phrase-fallback').style.display = 'none';
+            }
             
             // Share button
             document.getElementById('shareBtn').addEventListener('click', () => {
@@ -1457,20 +1557,26 @@
         
         // Handle consent granted (from CookiebotOnAccept event)
         function handleConsentGranted() {
-            renderPhrase();
+            updateUIFromConsent();
         }
 
         // Handle consent denied (from CookiebotOnDecline event)
         function handleConsentDenied() {
-            showFallback();
-            window.__phraseRendered = false;
+            updateUIFromConsent();
         }
 
         // Safari hard reset: if Cookiebot not initialized after 3s, show fallback
         setTimeout(() => {
             if (!window.Cookiebot) {
                 console.warn('Cookiebot not initialized after 3s - showing fallback');
-                showFallback();
+                // Don't permanently block - user can still open settings
+                const gateEl = document.getElementById('consent-gate');
+                if (gateEl && gateEl.style.display === 'none') {
+                    gateEl.style.display = 'block';
+                }
+            } else {
+                // Cookiebot loaded - check existing consent
+                updateUIFromConsent();
             }
         }, 3000);
 
@@ -1485,13 +1591,7 @@
             
             // Also listen for TCF events (for ads.js compatibility)
             window.addEventListener('cmp:consent-updated', () => {
-                // Re-check on TCF updates (for ads.js)
-                if (window.Cookiebot && window.Cookiebot.consent && 
-                    (window.Cookiebot.consent.preferences || window.Cookiebot.consent.statistics || window.Cookiebot.consent.marketing)) {
-                    handleConsentGranted();
-                } else {
-                    handleConsentDenied();
-                }
+                updateUIFromConsent();
             });
         });
     </script>

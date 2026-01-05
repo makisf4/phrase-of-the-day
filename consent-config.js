@@ -104,13 +104,24 @@
 
     /**
      * Open CMP consent preferences dialog
-     * Uses Cookiebot native API only
+     * Uses Cookiebot native API with retry logic for Safari
      */
-    window.__openCMP = function () {
-        if (window.Cookiebot && typeof window.Cookiebot.show === 'function') {
-            window.Cookiebot.show();
-            return;
+    window.__openCMP = async function () {
+        const maxRetries = 20;
+        const retryDelay = 100;
+
+        for (let i = 0; i < maxRetries; i++) {
+            if (window.Cookiebot && typeof window.Cookiebot.show === 'function') {
+                window.Cookiebot.show();
+                return;
+            }
+            if (window.Cookiebot && typeof window.Cookiebot.renew === 'function') {
+                window.Cookiebot.renew();
+                return;
+            }
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
         }
+
         alert('Οι ρυθμίσεις cookies δεν είναι ακόμη διαθέσιμες. Κάνε refresh και δοκίμασε ξανά.');
     };
 
