@@ -906,8 +906,8 @@
                         Επίλεξε "Αποδοχή" ή "Επιλογή" και ενεργοποίησε τα Marketing cookies.
                     </p>
                     <div class="actions" style="justify-content: center; gap: 0.75rem;">
-                        <button onclick="window.__openCMP && window.__openCMP(); return false;" class="btn--primary">Ρυθμίσεις cookies</button>
-                        <button id="skipPhraseBtn" class="btn--secondary">Συνέχεια χωρίς φράση</button>
+                            <button data-action="open-cookies" class="btn--primary">Ρυθμίσεις cookies</button>
+                        <button id="skipPhraseBtn" data-action="skip-phrase" class="btn--secondary">Συνέχεια χωρίς φράση</button>
                     </div>
                 </div>
             </div>
@@ -924,7 +924,7 @@
                             Μπορείς να δεις τη Φράση της Ημέρας αν ενεργοποιήσεις Preferences ή Statistics ή Marketing cookies από τις Ρυθμίσεις cookies.
                         </p>
                         <div class="actions" style="justify-content: center;">
-                            <button onclick="window.__openCMP && window.__openCMP(); return false;" class="btn--primary">Ρυθμίσεις cookies</button>
+                            <button data-action="open-cookies" class="btn--primary">Ρυθμίσεις cookies</button>
                         </div>
                     </div>
                 </div>
@@ -940,7 +940,7 @@
                         </div>
                         <div class="streak-line" id="streakLine"></div>
                         <div class="actions">
-                            <button id="shareBtn" class="btn--primary" data-btn-share>Share</button>
+                            <button id="shareBtn" class="btn--primary" data-action="share">Share</button>
                         </div>
                     </div>
                 </div>
@@ -961,7 +961,7 @@
             <a href="about.html" style="color: rgba(255, 255, 255, 0.78); text-decoration: none; font-size: 0.875rem; text-shadow: 0 1px 18px rgba(0, 0, 0, 0.45); transition: opacity 0.2s; margin: 0 0.75rem; display: inline-block;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Σχετικά</a>
             <a href="privacy.html" style="color: rgba(255, 255, 255, 0.78); text-decoration: none; font-size: 0.875rem; text-shadow: 0 1px 18px rgba(0, 0, 0, 0.45); transition: opacity 0.2s; margin: 0 0.75rem; display: inline-block;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Πολιτική Απορρήτου</a>
             <a href="contact.html" style="color: rgba(255, 255, 255, 0.78); text-decoration: none; font-size: 0.875rem; text-shadow: 0 1px 18px rgba(0, 0, 0, 0.45); transition: opacity 0.2s; margin: 0 0.75rem; display: inline-block;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Επικοινωνία</a>
-            <a href="javascript:void(0)" onclick="window.__openCMP && window.__openCMP(); return false;" style="color: rgba(255, 255, 255, 0.78); text-decoration: none; font-size: 0.875rem; text-shadow: 0 1px 18px rgba(0, 0, 0, 0.45); transition: opacity 0.2s; margin: 0 0.75rem; display: inline-block;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Ρυθμίσεις cookies</a>
+            <a href="javascript:void(0)" data-action="open-cookies" style="color: rgba(255, 255, 255, 0.78); text-decoration: none; font-size: 0.875rem; text-shadow: 0 1px 18px rgba(0, 0, 0, 0.45); transition: opacity 0.2s; margin: 0 0.75rem; display: inline-block;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Ρυθμίσεις cookies</a>
         </footer>
 
     </div>
@@ -1232,9 +1232,14 @@
             document.body.removeChild(textArea);
         }
 
-        async function shareUrl() {
+        async function shareUrl(buttonElement) {
             const url = window.location.href.split('#')[0];
-            const shareBtn = document.getElementById('shareBtn');
+            // Get button from DOM at click time (resilient to re-renders)
+            const shareBtn = buttonElement || document.querySelector('[data-action="share"]');
+            if (!shareBtn) {
+                console.warn('Share button not found');
+                return;
+            }
             const originalText = shareBtn.textContent;
 
             if (navigator.share) {
@@ -1436,6 +1441,52 @@
         // Prevent double rendering
         window.__phraseRendered = false;
 
+        // Initialize interactive UI with event delegation (resilient to re-renders)
+        let interactiveUIInitialized = false;
+        function initInteractiveUI() {
+            // Only set up delegation once
+            if (interactiveUIInitialized) {
+                return;
+            }
+            interactiveUIInitialized = true;
+
+            // Event delegation for all interactive buttons
+            document.addEventListener('click', async (e) => {
+                // Share button
+                const shareBtn = e.target.closest('[data-action="share"]');
+                if (shareBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    await shareUrl(shareBtn);
+                    return;
+                }
+
+                // Cookie settings button
+                const openCmpBtn = e.target.closest('[data-action="open-cookies"]');
+                if (openCmpBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.__openCMP) {
+                        await window.__openCMP();
+                    } else {
+                        alert('Οι ρυθμίσεις cookies δεν είναι ακόμη διαθέσιμες. Κάνε refresh και δοκίμασε ξανά.');
+                    }
+                    return;
+                }
+
+                // Skip phrase button
+                const skipBtn = e.target.closest('[data-action="skip-phrase"]');
+                if (skipBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showFallback();
+                    return;
+                }
+            }, { passive: false });
+
+            console.log('Interactive UI initialized with event delegation');
+        }
+
         // Cleanup overlays and unlock clicks
         function cleanupOverlays() {
             // Check if Cookiebot dialog is currently open
@@ -1478,10 +1529,31 @@
                 }
 
                 // Ensure footer links are always clickable
-                const footerLinks = document.querySelectorAll('footer a');
+                const footerLinks = document.querySelectorAll('footer a, footer button');
                 footerLinks.forEach(link => {
                     link.style.pointerEvents = 'auto';
                     link.style.zIndex = '10';
+                    link.style.position = 'relative';
+                });
+
+                // Ensure no high z-index element is blocking clicks
+                const allHighZIndex = document.querySelectorAll('[style*="z-index"]');
+                allHighZIndex.forEach(el => {
+                    const zIndex = window.getComputedStyle(el).zIndex;
+                    if (parseInt(zIndex) > 1000 && el.id !== 'CybotCookiebotDialog' && !el.closest('#CybotCookiebotDialog')) {
+                        // Check if it's covering the footer
+                        const rect = el.getBoundingClientRect();
+                        const footer = document.querySelector('footer');
+                        if (footer) {
+                            const footerRect = footer.getBoundingClientRect();
+                            if (rect.bottom > footerRect.top && rect.top < footerRect.bottom) {
+                                // Overlapping footer - reduce z-index or hide
+                                if (!el.classList.contains('hero') && !el.classList.contains('card')) {
+                                    el.style.pointerEvents = 'none';
+                                }
+                            }
+                        }
+                    }
                 });
             }, 100);
         }
@@ -1535,6 +1607,9 @@
             // Cleanup overlays
             cleanupOverlays();
             
+            // Ensure interactive UI is initialized
+            initInteractiveUI();
+            
             // Show phrase with reveal animation
             setTimeout(() => {
                 showPhrase(dailyPhrase, true);
@@ -1565,6 +1640,7 @@
             }
             
             cleanupOverlays();
+            initInteractiveUI();
         }
 
         // Update UI based on Cookiebot consent state
@@ -1590,21 +1666,11 @@
             if (window.Cookiebot && window.Cookiebot.consent) {
                 updateUIFromConsent();
             } else {
-                // Initial state: show gate, hide phrase
-                document.getElementById('consent-gate').style.display = 'block';
-                document.getElementById('phrase-container').style.display = 'none';
-                document.getElementById('phrase-fallback').style.display = 'none';
+            // Initial state: show gate, hide phrase
+            document.getElementById('consent-gate').style.display = 'block';
+            document.getElementById('phrase-container').style.display = 'none';
+            document.getElementById('phrase-fallback').style.display = 'none';
             }
-            
-            // Share button
-            document.getElementById('shareBtn').addEventListener('click', () => {
-                shareUrl();
-            });
-            
-            // Skip phrase button
-            document.getElementById('skipPhraseBtn').addEventListener('click', () => {
-                showFallback();
-            });
         }
         
         // Smooth scroll handler for anchor links (Safari fix)
@@ -1658,17 +1724,30 @@
             initBackground();
             initPhraseDisplay();
             
+            // Initialize interactive UI (event delegation)
+            initInteractiveUI();
+            
             // Listen for Cookiebot events
-            window.addEventListener('CookiebotOnAccept', handleConsentGranted);
-            window.addEventListener('CookiebotOnDecline', handleConsentDenied);
+            window.addEventListener('CookiebotOnAccept', () => {
+                handleConsentGranted();
+                cleanupOverlays();
+                initInteractiveUI(); // Re-ensure handlers work
+            });
+            window.addEventListener('CookiebotOnDecline', () => {
+                handleConsentDenied();
+                cleanupOverlays();
+                initInteractiveUI(); // Re-ensure handlers work
+            });
             window.addEventListener('CookiebotOnLoad', () => {
                 cleanupOverlays();
+                initInteractiveUI();
             });
             
             // Also listen for TCF events (for ads.js compatibility)
             window.addEventListener('cmp:consent-updated', () => {
                 updateUIFromConsent();
                 cleanupOverlays();
+                initInteractiveUI(); // Re-ensure handlers work
             });
 
             // Add smooth scroll handlers to footer links (for anchor links)
@@ -1678,7 +1757,10 @@
             });
 
             // Run cleanup once after page load
-            setTimeout(cleanupOverlays, 500);
+            setTimeout(() => {
+                cleanupOverlays();
+                initInteractiveUI();
+            }, 500);
         });
     </script>
 </body>
