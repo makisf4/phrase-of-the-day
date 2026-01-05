@@ -315,6 +315,22 @@
                 border-top: 1px solid #e5e7eb !important;
             }
         }
+
+        /* Fix Cookiebot modal scroll issues (desktop browsers) */
+        html.CookiebotDialogOpen,
+        body.CookiebotDialogOpen {
+            overflow: visible !important;
+            height: auto !important;
+        }
+
+        /* Ensure Cookiebot dialog itself can scroll within viewport */
+        #CybotCookiebotDialog,
+        #CybotCookiebotDialogBody,
+        #CybotCookiebotDialogBodyContent {
+            max-height: 100vh !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
     </style>
 </head>
 <body>
