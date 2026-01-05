@@ -337,6 +337,52 @@
             filter: none !important;
             perspective: none !important;
         }
+
+        /* === Cookiebot hard-fix: keep dialog in viewport across Safari/Brave === */
+        #CybotCookiebotDialog,
+        #CybotCookiebotDialogBody,
+        #CybotCookiebotDialogBodyUnderlay {
+            z-index: 2147483647 !important;
+        }
+
+        #CybotCookiebotDialog {
+            position: fixed !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            top: auto !important;
+            max-height: 100vh !important;
+            transform: none !important;
+            -webkit-transform: none !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        #CybotCookiebotDialogBody {
+            max-height: 100vh !important;
+            overflow: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        #CybotCookiebotDialogBodyUnderlay {
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 2147483646 !important;
+        }
+
+        [id^="CybotCookiebotDialog"] {
+            z-index: 2147483647 !important;
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
+        html.CookiebotDialogOpen,
+        body.CookiebotDialogOpen {
+            overflow-x: hidden !important;
+        }
     </style>
 </head>
 <body>
