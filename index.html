@@ -800,7 +800,14 @@
             line-height: 1.35 !important;
         }
 
-        /* === Cookiebot dialog constraints: always in viewport, centered, scrollable === */
+        /* === Cookiebot dialog: elegant centered modal (not full-screen) === */
+        #CybotCookiebotDialog,
+        .CybotCookiebotDialog,
+        #CybotCookiebotDialog *,
+        .CybotCookiebotDialog * {
+            box-sizing: border-box !important;
+        }
+
         #CybotCookiebotDialog,
         .CybotCookiebotDialog {
             position: fixed !important;
@@ -820,22 +827,33 @@
 
         #CybotCookiebotDialogBody,
         .CybotCookiebotDialogBody {
-            max-width: min(720px, calc(100vw - 24px)) !important;
-            max-height: calc(100vh - 24px) !important;
-            width: auto !important;
+            max-width: 520px !important;
+            width: min(92vw, 520px) !important;
+            max-height: 82vh !important;
+            height: auto !important;
             overflow: hidden !important;
             display: flex !important;
             flex-direction: column !important;
-            border-radius: 12px !important;
+            border-radius: 16px !important;
         }
 
         #CybotCookiebotDialogBodyContent,
         .CybotCookiebotDialogBodyContent {
-            max-height: calc(100vh - 200px) !important;
+            max-height: 82vh !important;
             overflow-y: auto !important;
             overflow-x: hidden !important;
             -webkit-overflow-scrolling: touch !important;
             flex: 1 1 auto !important;
+        }
+
+        /* Typography sizing */
+        #CybotCookiebotDialogBodyContentTitle {
+            font-size: 18px !important;
+        }
+
+        #CybotCookiebotDialogBodyContentText {
+            font-size: 14px !important;
+            line-height: 1.35 !important;
         }
 
         /* Ensure buttons/footer are always visible */
@@ -848,25 +866,26 @@
             bottom: 0 !important;
         }
 
-        /* Underlay must cover entire screen */
+        /* Underlay: present when open, removed when closed */
         #CybotCookiebotDialogBodyUnderlay,
         .CybotCookiebotDialogBodyUnderlay {
             position: fixed !important;
             inset: 0 !important;
             z-index: 2147483646 !important;
+            pointer-events: auto !important;
         }
 
         /* Mobile adjustments */
-        @media (max-width: 768px) {
-            #CybotCookiebotDialog,
-            .CybotCookiebotDialog {
-                padding: 8px !important;
-            }
-
+        @media (max-width: 600px) {
             #CybotCookiebotDialogBody,
             .CybotCookiebotDialogBody {
-                max-width: calc(100vw - 16px) !important;
-                max-height: calc(100vh - 16px) !important;
+                width: 94vw !important;
+                max-height: 88vh !important;
+            }
+
+            #CybotCookiebotDialogBodyContent,
+            .CybotCookiebotDialogBodyContent {
+                max-height: 88vh !important;
             }
         }
 
@@ -1524,8 +1543,8 @@
                     document.body.style.pointerEvents = '';
                     
                     // Remove any Cookiebot active classes that might lock scrolling
-                    document.documentElement.classList.remove('CookiebotDialogActive', 'CybotCookiebotDialogActive');
-                    document.body.classList.remove('CookiebotDialogActive', 'CybotCookiebotDialogActive');
+                    document.documentElement.classList.remove('CookiebotDialogActive', 'CybotCookiebotDialogActive', 'CybotCookiebotDialogOpen', 'CookiebotDialogOpen', 'modal-open', 'no-scroll');
+                    document.body.classList.remove('CookiebotDialogActive', 'CybotCookiebotDialogActive', 'CybotCookiebotDialogOpen', 'CookiebotDialogOpen', 'modal-open', 'no-scroll');
                 }
 
                 // Ensure footer links are always clickable

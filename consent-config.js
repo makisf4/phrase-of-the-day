@@ -126,11 +126,82 @@
     };
 
     /**
+     * Cleanup after Cookiebot consent decision (idempotent)
+     * Removes overlays, restores body state, closes dialog
+     */
+    function cleanupAfterCookiebotDecision() {
+        console.log('Cookiebot: Starting cleanup after consent decision');
+
+        // Check if dialog is still visible
+        const dialog = document.getElementById('CybotCookiebotDialog') || 
+                      document.querySelector('.CybotCookiebotDialog');
+        const isDialogVisible = dialog && window.getComputedStyle(dialog).display !== 'none';
+
+        // Close dialog explicitly if still open
+        if (isDialogVisible) {
+            if (window.Cookiebot && typeof window.Cookiebot.hide === 'function') {
+                console.log('Cookiebot: Calling Cookiebot.hide()');
+                window.Cookiebot.hide();
+            } else if (dialog) {
+                console.log('Cookiebot: Hiding dialog via display:none');
+                dialog.style.display = 'none';
+            }
+        }
+
+        // Remove/disable Cookiebot overlay/backdrop elements
+        const underlaySelectors = [
+            '#CybotCookiebotDialogBodyUnderlay',
+            '.CybotCookiebotDialogBodyUnderlay',
+            '[id*="CybotCookiebotDialogBodyUnderlay"]',
+            '[class*="Underlay"]'
+        ];
+
+        underlaySelectors.forEach(selector => {
+            try {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (!isDialogVisible) {
+                        el.style.display = 'none';
+                        el.style.pointerEvents = 'none';
+                        el.style.zIndex = '-1';
+                        console.log('Cookiebot: Removed underlay element:', selector);
+                    }
+                });
+            } catch (e) {
+                // Selector might be invalid, ignore
+            }
+        });
+
+        // Restore body/document state
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.body.style.overflowX = 'hidden';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.pointerEvents = '';
+
+        // Remove modal-open classes
+        document.documentElement.classList.remove('CybotCookiebotDialogOpen', 'CookiebotDialogOpen', 'modal-open', 'no-scroll');
+        document.body.classList.remove('CybotCookiebotDialogOpen', 'CookiebotDialogOpen', 'modal-open', 'no-scroll');
+
+        // Verify cleanup
+        setTimeout(() => {
+            const remainingUnderlay = document.querySelector('#CybotCookiebotDialogBodyUnderlay, .CybotCookiebotDialogBodyUnderlay');
+            if (remainingUnderlay && window.getComputedStyle(remainingUnderlay).display !== 'none') {
+                console.warn('Cookiebot: Underlay still present after cleanup');
+            } else {
+                console.log('Cookiebot: Cleanup complete - no blocking overlays');
+            }
+        }, 100);
+    }
+
+    /**
      * Handle consent granted (CookiebotOnAccept event)
      * Unlocks phrase display
      */
     function handleConsentGranted() {
         console.log('Cookiebot: Consent granted');
+        cleanupAfterCookiebotDecision();
         window.__notifyConsentUpdated();
     }
 
@@ -140,6 +211,7 @@
      */
     function handleConsentDenied() {
         console.log('Cookiebot: Consent denied');
+        cleanupAfterCookiebotDecision();
         window.__notifyConsentUpdated();
     }
 
