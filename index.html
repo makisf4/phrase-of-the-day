@@ -587,323 +587,20 @@
             }
         }
 
-        /* Cookiebot Banner Customization - Make it much smaller and compact */
+        /* Light Cookiebot styling - minimal constraints only */
         #CybotCookiebotDialog {
-            font-size: 0.6875rem !important;
-            max-width: 500px !important;
-            max-height: 92vh !important;
-            margin: 0 auto !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            right: auto !important;
-            overflow: hidden !important;
-            position: fixed !important;
-            display: flex !important;
-            flex-direction: column !important;
+            max-width: 520px !important;
+            max-height: 90vh !important;
         }
 
         #CybotCookiebotDialogBody {
-            padding: 0.5rem 0.75rem !important;
-            max-height: 75vh !important;
+            max-height: 85vh !important;
             overflow-y: auto !important;
-            overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch !important;
-            flex: 1 1 auto !important;
-            display: flex !important;
-            flex-direction: column !important;
         }
 
-        #CybotCookiebotDialogBodyContent {
-            padding: 0.375rem 0.5rem !important;
-            flex: 1 1 auto !important;
-            overflow-y: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-        }
-
-        #CybotCookiebotDialogBodyTitle {
-            font-size: 0.8125rem !important;
-            margin-bottom: 0.25rem !important;
-            font-weight: 600 !important;
-        }
-
-        #CybotCookiebotDialogBodyContentText {
-            font-size: 0.625rem !important;
-            line-height: 1.25 !important;
-            margin-bottom: 0.375rem !important;
-        }
-
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll,
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection,
-        #CybotCookiebotDialogBodyButtonDecline {
-            padding: 0.25rem 0.5rem !important;
-            font-size: 0.6875rem !important;
-            margin: 0.125rem !important;
-            min-height: auto !important;
-            height: auto !important;
-        }
-
-        #CybotCookiebotDialogBodyButtons {
-            margin-top: 0.375rem !important;
-            flex-wrap: wrap !important;
-            gap: 0.125rem !important;
-            flex-shrink: 0 !important;
-        }
-
-        /* Ensure footer/buttons stay visible */
-        #CybotCookiebotDialogFooter {
-            padding-bottom: 12px !important;
-            flex-shrink: 0 !important;
-        }
-
-        #CybotCookiebotDialogBodyLevel {
-            margin-top: 0.375rem !important;
-        }
-
-        /* Make cookie category toggles smaller */
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAllSelection,
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowSelection {
-            font-size: 0.625rem !important;
-            padding: 0.25rem 0.375rem !important;
-        }
-
-        /* Make toggle switches and labels smaller */
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAllSelection,
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowSelection,
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAllSelection {
-            font-size: 0.625rem !important;
-        }
-
-        /* Make "Show details" link smaller */
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAllSelection a,
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowSelection a {
-            font-size: 0.625rem !important;
-        }
-
-        /* Make cookie category labels smaller */
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAllSelection label,
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowSelection label {
-            font-size: 0.625rem !important;
-        }
-
-        /* Make toggle switches smaller */
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAllSelection input[type="checkbox"],
-        #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowSelection input[type="checkbox"] {
-            width: 1rem !important;
-            height: 1rem !important;
-        }
-
-        @media (max-width: 768px) {
-            #CybotCookiebotDialog {
-                max-width: 90% !important;
-                max-height: 70vh !important;
-                font-size: 0.625rem !important;
-                overflow-y: auto !important;
-                overflow-x: hidden !important;
-                bottom: 1rem !important;
-                top: auto !important;
-                position: fixed !important;
-            }
-
-            #CybotCookiebotDialogBody {
-                padding: 0.5rem 0.625rem !important;
-                max-height: 100% !important;
-                overflow-y: auto !important;
-            }
-
-            #CybotCookiebotDialogBodyContent {
-                padding: 0.375rem !important;
-            }
-
-            #CybotCookiebotDialogBodyTitle {
-                font-size: 0.75rem !important;
-            }
-
-            #CybotCookiebotDialogBodyContentText {
-                font-size: 0.5625rem !important;
-                line-height: 1.2 !important;
-            }
-
-            #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll,
-            #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection,
-            #CybotCookiebotDialogBodyButtonDecline {
-                padding: 0.25rem 0.5rem !important;
-                font-size: 0.625rem !important;
-                display: inline-block !important;
-                width: auto !important;
-                margin: 0.125rem !important;
-            }
-
-            /* Ensure buttons are visible and sticky at bottom */
-            #CybotCookiebotDialogBodyButtons {
-                position: sticky !important;
-                bottom: 0 !important;
-                background: white !important;
-                padding-top: 0.5rem !important;
-                margin-top: 0.5rem !important;
-                border-top: 1px solid #e5e7eb !important;
-            }
-        }
-
-        /* Consent Gate Styling */
-        .consent-gate {
-            max-width: var(--max);
-            margin: 0 auto;
-            padding: 0 var(--pad);
-        }
-
-        .consent-gate .card {
-            margin-top: 2rem;
-        }
-
-        .consent-gate h3 {
-            color: var(--text);
-        }
-
-        .consent-gate .actions {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        @media (max-width: 480px) {
-            .consent-gate .actions {
-                flex-direction: column;
-            }
-
-            .consent-gate .actions button {
-                width: 100%;
-            }
-        }
-
-        /* Fix Cookiebot modal scroll issues (desktop browsers) */
-        html.CookiebotDialogOpen,
-        body.CookiebotDialogOpen {
-            overflow: visible !important;
-            height: auto !important;
-        }
-
-        /* Ensure parent containers don't break fixed positioning */
-        .container,
-        .content,
-        main {
-            transform: none !important;
-            filter: none !important;
-            perspective: none !important;
-        }
-
-        /* === Cookiebot hardening: isolate from site typography scaling === */
-        /* Prevent vw/clamp font-size from affecting Cookiebot */
-        #CybotCookiebotDialog,
-        #CybotCookiebotDialog *,
-        .CybotCookiebotDialog,
-        .CybotCookiebotDialog * {
-            font-size: 14px !important;
-            line-height: 1.35 !important;
-        }
-
-        /* === Cookiebot dialog: elegant centered modal (not full-screen) === */
-        #CybotCookiebotDialog,
-        .CybotCookiebotDialog,
-        #CybotCookiebotDialog *,
-        .CybotCookiebotDialog * {
-            box-sizing: border-box !important;
-        }
-
-        #CybotCookiebotDialog,
-        .CybotCookiebotDialog {
-            position: fixed !important;
-            inset: 0 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            z-index: 2147483647 !important;
-            max-width: 100vw !important;
-            max-height: 100vh !important;
-            overflow: hidden !important;
-            transform: none !important;
-            -webkit-transform: none !important;
-            margin: 0 !important;
-            padding: 12px !important;
-        }
-
-        #CybotCookiebotDialogBody,
-        .CybotCookiebotDialogBody {
-            max-width: 520px !important;
-            width: min(92vw, 520px) !important;
-            max-height: 82vh !important;
-            height: auto !important;
-            overflow: hidden !important;
-            display: flex !important;
-            flex-direction: column !important;
-            border-radius: 16px !important;
-        }
-
-        #CybotCookiebotDialogBodyContent,
-        .CybotCookiebotDialogBodyContent {
-            max-height: 82vh !important;
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch !important;
-            flex: 1 1 auto !important;
-        }
-
-        /* Typography sizing */
-        #CybotCookiebotDialogBodyContentTitle {
-            font-size: 18px !important;
-        }
-
-        #CybotCookiebotDialogBodyContentText {
-            font-size: 14px !important;
-            line-height: 1.35 !important;
-        }
-
-        /* Ensure buttons/footer are always visible */
-        #CybotCookiebotDialogBodyButtons,
-        #CybotCookiebotDialogFooter,
-        .CybotCookiebotDialogBodyButtons,
-        .CybotCookiebotDialogFooter {
-            flex-shrink: 0 !important;
-            position: sticky !important;
-            bottom: 0 !important;
-        }
-
-        /* Underlay: present when open, removed when closed */
-        #CybotCookiebotDialogBodyUnderlay,
-        .CybotCookiebotDialogBodyUnderlay {
-            position: fixed !important;
-            inset: 0 !important;
-            z-index: 2147483646 !important;
-            pointer-events: auto !important;
-        }
-
-        /* Mobile adjustments */
-        @media (max-width: 600px) {
-            #CybotCookiebotDialogBody,
-            .CybotCookiebotDialogBody {
-                width: 94vw !important;
-                max-height: 88vh !important;
-            }
-
-            #CybotCookiebotDialogBodyContent,
-            .CybotCookiebotDialogBodyContent {
-                max-height: 88vh !important;
-            }
-        }
-
-        /* Fallback for any Cookiebot element with ID starting with CybotCookiebotDialog */
-        [id^="CybotCookiebotDialog"] {
-            z-index: 2147483647 !important;
-        }
-
-        /* Safety: prevent horizontal scroll lock that might affect dialog */
+        /* Safety: prevent horizontal scroll lock */
         html, body {
             overflow-x: hidden;
-        }
-
-        /* When Cookiebot dialog is open, ensure body doesn't interfere with fixed positioning */
-        html.CookiebotDialogOpen,
-        body.CookiebotDialogOpen {
-            overflow-x: hidden !important;
-            /* Don't change body position - keep it relative for layout, but ensure Cookiebot escapes */
         }
     </style>
 </head>
@@ -917,39 +614,12 @@
         </header>
 
         <main class="content">
-            <!-- Consent Gate (shown when no marketing consent) -->
-            <div id="consent-gate" class="consent-gate" style="display: none;">
-                <div class="card card--primary">
-                    <h3 style="font-size: 1.25rem; margin-bottom: 1rem; text-align: center;">Για να δεις τη Φράση της Ημέρας</h3>
-                    <p style="text-align: center; margin-bottom: 1.5rem; color: var(--muted);">
-                        Επίλεξε "Αποδοχή" ή "Επιλογή" και ενεργοποίησε τα Marketing cookies.
-                    </p>
-                    <div class="actions" style="justify-content: center; gap: 0.75rem;">
-                            <button data-action="open-cookies" class="btn--primary">Ρυθμίσεις cookies</button>
-                        <button id="skipPhraseBtn" data-action="skip-phrase" class="btn--secondary">Συνέχεια χωρίς φράση</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Phrase Container (hidden until consent) -->
-            <section id="phrase-container" class="section" style="display: none;">
+            <!-- Phrase Container (always visible) -->
+            <section id="phrase-container" class="section">
                 <h2 id="sectionTitle" class="section-title">Η σημερινή φράση</h2>
                 
-                <!-- Fallback message (shown when user skips phrase) -->
-                <div id="phrase-fallback" class="consent-gate" style="display: none;">
-                    <div class="card card--primary">
-                        <h3 style="font-size: 1.25rem; margin-bottom: 1rem; text-align: center;">Χωρίς cookies (προς το παρόν)</h3>
-                        <p style="text-align: center; margin-bottom: 1.5rem; color: var(--muted);">
-                            Μπορείς να δεις τη Φράση της Ημέρας αν ενεργοποιήσεις Preferences ή Statistics ή Marketing cookies από τις Ρυθμίσεις cookies.
-                        </p>
-                        <div class="actions" style="justify-content: center;">
-                            <button data-action="open-cookies" class="btn--primary">Ρυθμίσεις cookies</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Actual phrase content (hidden when fallback is shown) -->
-                <div id="phrase-content" style="display: none;">
+                <!-- Actual phrase content -->
+                <div id="phrase-content">
                     <div class="card card--primary">
                         <div class="phrase-box" id="phraseBox">
                             <div class="loading" id="loading">
@@ -1160,8 +830,8 @@
                 if (typeof Storage === 'undefined') return null;
                 
                 const today = getDateKey(new Date());
-                const lastVisit = localStorage.getItem('lastVisit');
-                const currentStreak = parseInt(localStorage.getItem('streak') || '0', 10);
+                const lastVisit = localStorage.getItem('kg_last_visit');
+                const currentStreak = parseInt(localStorage.getItem('kg_streak') || '0', 10);
                 
                 if (lastVisit === today) {
                     return currentStreak;
@@ -1178,8 +848,8 @@
                     newStreak = 1;
                 }
                 
-                localStorage.setItem('lastVisit', today);
-                localStorage.setItem('streak', newStreak.toString());
+                localStorage.setItem('kg_last_visit', today);
+                localStorage.setItem('kg_streak', newStreak.toString());
                 
                 return newStreak;
             } catch (e) {
@@ -1190,7 +860,7 @@
         function getStreak() {
             try {
                 if (typeof Storage === 'undefined') return null;
-                const streak = localStorage.getItem('streak');
+                const streak = localStorage.getItem('kg_streak');
                 return streak ? parseInt(streak, 10) : null;
             } catch (e) {
                 return null;
@@ -1493,94 +1163,14 @@
                     return;
                 }
 
-                // Skip phrase button
-                const skipBtn = e.target.closest('[data-action="skip-phrase"]');
-                if (skipBtn) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    showFallback();
-                    return;
-                }
             }, { passive: false });
 
             console.log('Interactive UI initialized with event delegation');
         }
 
-        // Cleanup overlays and unlock clicks
-        function cleanupOverlays() {
-            // Check if Cookiebot dialog is currently open
-            const dialog = document.getElementById('CybotCookiebotDialog') || document.querySelector('.CybotCookiebotDialog');
-            const isDialogOpen = dialog && window.getComputedStyle(dialog).display !== 'none';
-
-            // Hide our gate and disable pointer events
-            const gateEl = document.getElementById('consent-gate');
-            if (gateEl) {
-                gateEl.style.display = 'none';
-                gateEl.style.pointerEvents = 'none';
-                gateEl.style.zIndex = '-1';
-            }
-            const fallbackEl = document.getElementById('phrase-fallback');
-            if (fallbackEl) {
-                fallbackEl.style.pointerEvents = 'auto';
-            }
-
-            // Remove Cookiebot overlay after short delay (only if dialog is closed)
-            setTimeout(() => {
-                if (!isDialogOpen) {
-                    const overlay = document.getElementById('CybotCookiebotDialogBodyUnderlay') || 
-                                   document.querySelector('.CybotCookiebotDialogBodyUnderlay');
-                    if (overlay) {
-                        overlay.style.display = 'none';
-                        overlay.style.pointerEvents = 'none';
-                        overlay.style.zIndex = '-1';
-                    }
-                    
-                    // Unlock body/html overflow only if dialog is not open
-                    document.documentElement.style.overflow = '';
-                    document.body.style.overflow = '';
-                    document.body.style.overflowX = 'hidden';
-                    document.body.style.position = '';
-                    document.body.style.pointerEvents = '';
-                    
-                    // Remove any Cookiebot active classes that might lock scrolling
-                    document.documentElement.classList.remove('CookiebotDialogActive', 'CybotCookiebotDialogActive', 'CybotCookiebotDialogOpen', 'CookiebotDialogOpen', 'modal-open', 'no-scroll');
-                    document.body.classList.remove('CookiebotDialogActive', 'CybotCookiebotDialogActive', 'CybotCookiebotDialogOpen', 'CookiebotDialogOpen', 'modal-open', 'no-scroll');
-                }
-
-                // Ensure footer links are always clickable
-                const footerLinks = document.querySelectorAll('footer a, footer button');
-                footerLinks.forEach(link => {
-                    link.style.pointerEvents = 'auto';
-                    link.style.zIndex = '10';
-                    link.style.position = 'relative';
-                });
-
-                // Ensure no high z-index element is blocking clicks
-                const allHighZIndex = document.querySelectorAll('[style*="z-index"]');
-                allHighZIndex.forEach(el => {
-                    const zIndex = window.getComputedStyle(el).zIndex;
-                    if (parseInt(zIndex) > 1000 && el.id !== 'CybotCookiebotDialog' && !el.closest('#CybotCookiebotDialog')) {
-                        // Check if it's covering the footer
-                        const rect = el.getBoundingClientRect();
-                        const footer = document.querySelector('footer');
-                        if (footer) {
-                            const footerRect = footer.getBoundingClientRect();
-                            if (rect.bottom > footerRect.top && rect.top < footerRect.bottom) {
-                                // Overlapping footer - reduce z-index or hide
-                                if (!el.classList.contains('hero') && !el.classList.contains('card')) {
-                                    el.style.pointerEvents = 'none';
-                                }
-                            }
-                        }
-                    }
-                });
-            }, 100);
-        }
-
-        // Render phrase (called after consent granted)
+        // Render phrase immediately (no consent check)
         function renderPhrase() {
             if (window.__phraseRendered) {
-                cleanupOverlays();
                 return;
             }
 
@@ -1602,30 +1192,6 @@
                 streakLine.style.display = 'none';
             }
             
-            // Show phrase container and content
-            const gateEl = document.getElementById('consent-gate');
-            const fallbackEl = document.getElementById('phrase-fallback');
-            const containerEl = document.getElementById('phrase-container');
-            const contentEl = document.getElementById('phrase-content');
-            
-            if (gateEl) {
-                gateEl.style.display = 'none';
-                gateEl.style.pointerEvents = 'none';
-            }
-            if (fallbackEl) {
-                fallbackEl.style.display = 'none';
-                fallbackEl.style.pointerEvents = 'none';
-            }
-            if (containerEl) {
-                containerEl.style.display = 'block';
-            }
-            if (contentEl) {
-                contentEl.style.display = 'block';
-            }
-            
-            // Cleanup overlays
-            cleanupOverlays();
-            
             // Ensure interactive UI is initialized
             initInteractiveUI();
             
@@ -1634,62 +1200,6 @@
                 showPhrase(dailyPhrase, true);
                 window.__phraseRendered = true;
             }, 300);
-        }
-
-        // Show fallback (called after consent denied)
-        function showFallback() {
-            const gateEl = document.getElementById('consent-gate');
-            const containerEl = document.getElementById('phrase-container');
-            const fallbackEl = document.getElementById('phrase-fallback');
-            const contentEl = document.getElementById('phrase-content');
-            
-            if (gateEl) {
-                gateEl.style.display = 'none';
-                gateEl.style.pointerEvents = 'none';
-            }
-            if (containerEl) {
-                containerEl.style.display = 'block';
-            }
-            if (fallbackEl) {
-                fallbackEl.style.display = 'block';
-                fallbackEl.style.pointerEvents = 'auto';
-            }
-            if (contentEl) {
-                contentEl.style.display = 'none';
-            }
-            
-            cleanupOverlays();
-            initInteractiveUI();
-        }
-
-        // Update UI based on Cookiebot consent state
-        function updateUIFromConsent() {
-            if (!window.Cookiebot || !window.Cookiebot.consent) {
-                return;
-            }
-
-            const c = window.Cookiebot.consent;
-            const hasNonNecessary = !!(c.preferences || c.statistics || c.marketing);
-
-            if (hasNonNecessary) {
-                renderPhrase();
-            } else {
-                showFallback();
-                window.__phraseRendered = false;
-            }
-        }
-
-        // Initial phrase display setup
-        function initPhraseDisplay() {
-            // Check if Cookiebot already has consent decision
-            if (window.Cookiebot && window.Cookiebot.consent) {
-                updateUIFromConsent();
-            } else {
-            // Initial state: show gate, hide phrase
-            document.getElementById('consent-gate').style.display = 'block';
-            document.getElementById('phrase-container').style.display = 'none';
-            document.getElementById('phrase-fallback').style.display = 'none';
-            }
         }
         
         // Smooth scroll handler for anchor links (Safari fix)
@@ -1711,75 +1221,19 @@
             }
         }
 
-        // Handle consent granted (from CookiebotOnAccept event)
-        function handleConsentGranted() {
-            updateUIFromConsent();
-            cleanupOverlays();
-        }
-
-        // Handle consent denied (from CookiebotOnDecline event)
-        function handleConsentDenied() {
-            updateUIFromConsent();
-            cleanupOverlays();
-        }
-
-        // Safari hard reset: if Cookiebot not initialized after 3s, show fallback
-        setTimeout(() => {
-            if (!window.Cookiebot) {
-                console.warn('Cookiebot not initialized after 3s - showing fallback');
-                // Don't permanently block - user can still open settings
-                const gateEl = document.getElementById('consent-gate');
-                if (gateEl && gateEl.style.display === 'none') {
-                    gateEl.style.display = 'block';
-                }
-            } else {
-                // Cookiebot loaded - check existing consent
-                updateUIFromConsent();
-            }
-        }, 3000);
-
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             initBackground();
-            initPhraseDisplay();
+            renderPhrase();
             
             // Initialize interactive UI (event delegation)
             initInteractiveUI();
-            
-            // Listen for Cookiebot events
-            window.addEventListener('CookiebotOnAccept', () => {
-                handleConsentGranted();
-                cleanupOverlays();
-                initInteractiveUI(); // Re-ensure handlers work
-            });
-            window.addEventListener('CookiebotOnDecline', () => {
-                handleConsentDenied();
-                cleanupOverlays();
-                initInteractiveUI(); // Re-ensure handlers work
-            });
-            window.addEventListener('CookiebotOnLoad', () => {
-                cleanupOverlays();
-                initInteractiveUI();
-            });
-            
-            // Also listen for TCF events (for ads.js compatibility)
-            window.addEventListener('cmp:consent-updated', () => {
-                updateUIFromConsent();
-                cleanupOverlays();
-                initInteractiveUI(); // Re-ensure handlers work
-            });
 
             // Add smooth scroll handlers to footer links (for anchor links)
             const footerLinks = document.querySelectorAll('footer a[href^="#"]');
             footerLinks.forEach(link => {
                 link.addEventListener('click', handleAnchorClick);
             });
-
-            // Run cleanup once after page load
-            setTimeout(() => {
-                cleanupOverlays();
-                initInteractiveUI();
-            }, 500);
         });
     </script>
 </body>

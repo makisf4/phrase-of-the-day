@@ -104,114 +104,35 @@
 
     /**
      * Open CMP consent preferences dialog
-     * Uses Cookiebot native API with retry logic for Safari
+     * Simple implementation - no heavy cleanup needed
      */
     window.__openCMP = async function () {
-        const maxRetries = 20;
-        const retryDelay = 100;
-
-        for (let i = 0; i < maxRetries; i++) {
-            if (window.Cookiebot && typeof window.Cookiebot.show === 'function') {
-                window.Cookiebot.show();
-                return;
-            }
-            if (window.Cookiebot && typeof window.Cookiebot.renew === 'function') {
-                window.Cookiebot.renew();
-                return;
-            }
-            await new Promise(resolve => setTimeout(resolve, retryDelay));
+        if (window.Cookiebot && typeof window.Cookiebot.show === 'function') {
+            window.Cookiebot.show();
+            return;
         }
-
-        alert('Οι ρυθμίσεις cookies δεν είναι ακόμη διαθέσιμες. Κάνε refresh και δοκίμασε ξανά.');
+        if (window.Cookiebot && typeof window.Cookiebot.renew === 'function') {
+            window.Cookiebot.renew();
+            return;
+        }
+        alert('Το παράθυρο ρυθμίσεων cookies δεν είναι διαθέσιμο ακόμα. Δοκίμασε ξανά σε λίγα δευτερόλεπτα.');
     };
 
     /**
-     * Cleanup after Cookiebot consent decision (idempotent)
-     * Removes overlays, restores body state, closes dialog
-     */
-    function cleanupAfterCookiebotDecision() {
-        console.log('Cookiebot: Starting cleanup after consent decision');
-
-        // Check if dialog is still visible
-        const dialog = document.getElementById('CybotCookiebotDialog') || 
-                      document.querySelector('.CybotCookiebotDialog');
-        const isDialogVisible = dialog && window.getComputedStyle(dialog).display !== 'none';
-
-        // Close dialog explicitly if still open
-        if (isDialogVisible) {
-            if (window.Cookiebot && typeof window.Cookiebot.hide === 'function') {
-                console.log('Cookiebot: Calling Cookiebot.hide()');
-                window.Cookiebot.hide();
-            } else if (dialog) {
-                console.log('Cookiebot: Hiding dialog via display:none');
-                dialog.style.display = 'none';
-            }
-        }
-
-        // Remove/disable Cookiebot overlay/backdrop elements
-        const underlaySelectors = [
-            '#CybotCookiebotDialogBodyUnderlay',
-            '.CybotCookiebotDialogBodyUnderlay',
-            '[id*="CybotCookiebotDialogBodyUnderlay"]',
-            '[class*="Underlay"]'
-        ];
-
-        underlaySelectors.forEach(selector => {
-            try {
-                const elements = document.querySelectorAll(selector);
-                elements.forEach(el => {
-                    if (!isDialogVisible) {
-                        el.style.display = 'none';
-                        el.style.pointerEvents = 'none';
-                        el.style.zIndex = '-1';
-                        console.log('Cookiebot: Removed underlay element:', selector);
-                    }
-                });
-            } catch (e) {
-                // Selector might be invalid, ignore
-            }
-        });
-
-        // Restore body/document state
-        document.documentElement.style.overflow = '';
-        document.body.style.overflow = '';
-        document.body.style.overflowX = 'hidden';
-        document.body.style.position = '';
-        document.body.style.width = '';
-        document.body.style.pointerEvents = '';
-
-        // Remove modal-open classes
-        document.documentElement.classList.remove('CybotCookiebotDialogOpen', 'CookiebotDialogOpen', 'modal-open', 'no-scroll');
-        document.body.classList.remove('CybotCookiebotDialogOpen', 'CookiebotDialogOpen', 'modal-open', 'no-scroll');
-
-        // Verify cleanup
-        setTimeout(() => {
-            const remainingUnderlay = document.querySelector('#CybotCookiebotDialogBodyUnderlay, .CybotCookiebotDialogBodyUnderlay');
-            if (remainingUnderlay && window.getComputedStyle(remainingUnderlay).display !== 'none') {
-                console.warn('Cookiebot: Underlay still present after cleanup');
-            } else {
-                console.log('Cookiebot: Cleanup complete - no blocking overlays');
-            }
-        }, 100);
-    }
-
-    /**
      * Handle consent granted (CookiebotOnAccept event)
-     * Unlocks phrase display
+     * Notify that consent was updated (for ads.js)
      */
     function handleConsentGranted() {
         console.log('Cookiebot: Consent granted');
-        cleanupAfterCookiebotDecision();
         window.__notifyConsentUpdated();
     }
 
     /**
      * Handle consent denied (CookiebotOnDecline event)
-     * Shows fallback UI
+     * Notify that consent was updated (for ads.js)
      */
     function handleConsentDenied() {
         console.log('Cookiebot: Consent denied');
-        cleanupAfterCookiebotDecision();
         window.__notifyConsentUpdated();
     }
 
