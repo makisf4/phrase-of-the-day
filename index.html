@@ -465,6 +465,76 @@
             text-shadow: 0 1px 18px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
+        .content-sections {
+            max-width: var(--max);
+            margin: 0 auto 4rem;
+            padding: clamp(1.75rem, 3vw, 2.75rem);
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: calc(var(--radius) - 4px);
+            box-shadow: var(--shadow);
+            color: var(--text);
+            line-height: 1.75;
+            text-align: left;
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+        }
+
+        .content-block {
+            margin-bottom: 2.25rem;
+        }
+
+        .content-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .content-sections h2 {
+            font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+            margin-bottom: 0.75rem;
+            color: var(--text);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .content-sections h3 {
+            font-size: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 0.35rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .content-sections p {
+            margin: 0.5rem 0 0;
+            color: var(--text);
+            text-shadow: none;
+        }
+
+        .recent-phrases {
+            list-style: none;
+            margin: 0.75rem 0 0;
+            padding: 0;
+        }
+
+        .recent-phrases li {
+            padding: 0.55rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .recent-phrases li:last-child {
+            border-bottom: none;
+        }
+
+        .faq-item + .faq-item {
+            margin-top: 0.75rem;
+        }
+
+        .content-cta {
+            text-align: center;
+            font-weight: 600;
+        }
+
         @media (min-width: 768px) {
             body {
                 padding: 3.5rem var(--pad);
@@ -638,6 +708,54 @@
             <section class="section">
                 <p>Μια καθημερινή φράση που αλλάζει κάθε μέρα για όλους. Χωρίς motivation, χωρίς quotes, χωρίς horoscope. Μόνο μια ειρωνική ανάγνωση της καθημερινότητας.</p>
             </section>
+
+            <section id="content-sections" class="content-sections">
+                <div class="content-block">
+                    <h2>Τι είναι η Φράση της Ημέρας που σε Περιγράφει;</h2>
+                    <p>Κάθε μέρα εμφανίζεται μία διαφορετική φράση που «κολλάει» στη διάθεση της ημέρας.</p>
+                    <p>Είναι ένα μικρό, σαρκαστικό σχόλιο για την καθημερινότητα — για χαβαλέ και αυτοαναγνώριση.</p>
+                    <p>Δεν είναι τεστ προσωπικότητας και δεν κάνει καμία ψυχολογική αξιολόγηση ή διάγνωση.</p>
+                </div>
+
+                <div class="content-block">
+                    <h2>Πώς βγαίνει η σημερινή φράση</h2>
+                    <p>Η επιλογή βασίζεται στην ημερομηνία, ώστε όλοι να βλέπουν την ίδια φράση μέσα στη μέρα.</p>
+                </div>
+
+                <div class="content-block">
+                    <h2>Streak</h2>
+                    <p>Μετράει τις συνεχόμενες μέρες επιστροφής από την ίδια συσκευή. Η μέτρηση γίνεται τοπικά, χωρίς cookies παρακολούθησης.</p>
+                </div>
+
+                <div class="content-block">
+                    <h2>Προηγούμενες φράσεις</h2>
+                    <ul id="recent-phrases" class="recent-phrases"></ul>
+                </div>
+
+                <div class="content-block">
+                    <h2>FAQ</h2>
+                    <div class="faq-item">
+                        <h3>Είναι τυχαίο;</h3>
+                        <p>Όχι. Η φράση προκύπτει από την ημερομηνία, ώστε να είναι ίδια για όλους την ίδια μέρα.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Αποθηκεύετε δεδομένα;</h3>
+                        <p>Δεν κρατάμε προσωπικά δεδομένα. Μόνο το streak αποθηκεύεται τοπικά στη συσκευή σου.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Γιατί βλέπω άλλη φράση σε άλλη μέρα;</h3>
+                        <p>Κάθε ημερομηνία αντιστοιχεί σε διαφορετική φράση, οπότε αλλάζει με την ημέρα.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Τι είναι το streak;</h3>
+                        <p>Είναι το σερί επιστροφών σου. Αν μπαίνεις κάθε μέρα, ο αριθμός ανεβαίνει.</p>
+                    </div>
+                </div>
+
+                <div class="content-block content-cta">
+                    <p>Έλα αύριο για τη νέα φράση.</p>
+                </div>
+            </section>
         </main>
 
         <!-- Ad Slot -->
@@ -804,10 +922,36 @@
             return `${day}/${month}/${year}`;
         }
 
+        function formatShortDate(date) {
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${day}/${month}`;
+        }
+
         function getPhraseForDate(dateKey) {
             const hash = simpleHash(dateKey);
             const index = hash % PHRASES.length;
             return PHRASES[index];
+        }
+
+        function renderRecentPhrases(count = 7) {
+            const list = document.getElementById('recent-phrases');
+            if (!list) {
+                return;
+            }
+
+            list.innerHTML = '';
+            const today = new Date();
+
+            for (let i = 1; i <= count; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+                const dateKey = getDateKey(date);
+                const phrase = getPhraseForDate(dateKey);
+                const item = document.createElement('li');
+                item.textContent = `${formatShortDate(date)} — ${phrase}`;
+                list.appendChild(item);
+            }
         }
 
         function getYesterdayKey() {
@@ -825,33 +969,63 @@
             return randomPhrase;
         }
 
+        // Timezone-safe streak logic using local dates (not UTC)
+        function kgGetLocalDateKey(d = new Date()) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${y}-${m}-${day}`; // LOCAL date (not UTC)
+        }
+
+        function kgParseDateKey(dateKey) {
+            // dateKey: YYYY-MM-DD -> Date at local midnight
+            const [y, m, d] = dateKey.split("-").map(Number);
+            return new Date(y, (m || 1) - 1, d || 1);
+        }
+
+        function kgDiffDaysLocal(aKey, bKey) {
+            // returns whole-day difference between local midnights
+            const a = kgParseDateKey(aKey);
+            const b = kgParseDateKey(bKey);
+            const msPerDay = 24 * 60 * 60 * 1000;
+            return Math.round((b.getTime() - a.getTime()) / msPerDay);
+        }
+
         function updateStreak() {
             try {
                 if (typeof Storage === 'undefined') return null;
                 
-                const today = getDateKey(new Date());
-                const lastVisit = localStorage.getItem('kg_last_visit');
-                const currentStreak = parseInt(localStorage.getItem('kg_streak') || '0', 10);
-                
-                if (lastVisit === today) {
-                    return currentStreak;
+                const todayKey = kgGetLocalDateKey();
+                const lastKey = localStorage.getItem("kg_last_visit");
+                const rawStreak = localStorage.getItem("kg_streak");
+                const streak = Number.isFinite(Number(rawStreak)) ? Number(rawStreak) : 0;
+
+                if (!lastKey) {
+                    localStorage.setItem("kg_last_visit", todayKey);
+                    localStorage.setItem("kg_streak", "1");
+                    return 1;
                 }
-                
-                const yesterday = getYesterdayKey();
-                let newStreak;
-                
-                if (lastVisit === yesterday) {
-                    newStreak = currentStreak + 1;
-                } else if (lastVisit === null || lastVisit === '') {
-                    newStreak = 1;
-                } else {
-                    newStreak = 1;
+
+                if (lastKey === todayKey) {
+                    // already counted today
+                    if (streak >= 1) return streak;
+                    localStorage.setItem("kg_streak", "1");
+                    return 1;
                 }
-                
-                localStorage.setItem('kg_last_visit', today);
-                localStorage.setItem('kg_streak', newStreak.toString());
-                
-                return newStreak;
+
+                const diff = kgDiffDaysLocal(lastKey, todayKey);
+
+                if (diff === 1) {
+                    const next = Math.max(1, streak) + 1;
+                    localStorage.setItem("kg_last_visit", todayKey);
+                    localStorage.setItem("kg_streak", String(next));
+                    return next;
+                }
+
+                // If clock changed and lastKey appears in the future OR gap > 1 day -> reset
+                localStorage.setItem("kg_last_visit", todayKey);
+                localStorage.setItem("kg_streak", "1");
+                return 1;
             } catch (e) {
                 return null;
             }
@@ -1225,6 +1399,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initBackground();
             renderPhrase();
+            renderRecentPhrases(7);
             
             // Initialize interactive UI (event delegation)
             initInteractiveUI();

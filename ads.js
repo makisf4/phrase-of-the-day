@@ -12,6 +12,7 @@
 (function() {
     'use strict';
 
+    const ADSENSE_APPROVED = false;
     let adsInitialized = false;
     const AD_SLOT_ID = 'ad-slot-home';
 
@@ -37,6 +38,10 @@
      * This function is idempotent - safe to call multiple times
      */
     async function initAds() {
+        if (!ADSENSE_APPROVED) {
+            return;
+        }
+
         // Prevent multiple initializations
         if (adsInitialized) {
             return;
