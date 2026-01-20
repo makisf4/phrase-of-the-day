@@ -771,7 +771,7 @@
             </section>
 
             <section class="kg-quote-of-day" aria-label="Σαν σήμερα">
-                <h2>Σαν σήμερα</h2>
+                <h2 id="kgQuoteTitle">Σαν σήμερα</h2>
                 <p id="kgQuoteMeta" class="kg-quote-meta"></p>
                 <blockquote>
                     <p id="kgQuoteEn" class="kg-quote-en"></p>
@@ -1071,18 +1071,22 @@
         }
 
         function renderOnThisDayQuote() {
+            const titleEl = document.getElementById('kgQuoteTitle');
             const metaEl = document.getElementById('kgQuoteMeta');
             const enEl = document.getElementById('kgQuoteEn');
             const authorEl = document.getElementById('kgQuoteAuthor');
             const elEl = document.getElementById('kgQuoteEl');
             const sourceWrap = document.getElementById('kgQuoteSource');
 
-            if (!metaEl || !enEl || !authorEl || !elEl || !sourceWrap) {
+            if (!titleEl || !metaEl || !enEl || !authorEl || !elEl || !sourceWrap) {
                 return;
             }
 
             const onThisDayQuote = getOnThisDayQuote();
             const todayQuote = onThisDayQuote || getDailyFamousQuote();
+            titleEl.textContent = onThisDayQuote
+                ? 'Σαν σήμερα'
+                : 'Διάσημο απόφθεγμα της ημέρας';
 
             if (!todayQuote) {
                 metaEl.textContent = 'Διάσημο απόφθεγμα της ημέρας';
