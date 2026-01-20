@@ -518,7 +518,7 @@
             display: inline-block;
             margin-top: 0.65rem;
             font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.78);
+            color: rgba(255, 255, 255, 0.82);
             text-decoration: none;
         }
 
@@ -767,7 +767,7 @@
             </section>
 
             <section class="section">
-                <p>Μια καθημερινή φράση που αλλάζει κάθε μέρα για όλους. Χωρίς motivation, χωρίς quotes, χωρίς horoscope. Μόνο μια ειρωνική ανάγνωση της καθημερινότητας.</p>
+                <p>Μια καθημερινή φράση που αλλάζει κάθε μέρα για όλους. Χωρίς motivation, χωρίς horoscope. Μόνο μια ειρωνική ανάγνωση της καθημερινότητας, με ένα διακριτικό «σαν σήμερα».</p>
             </section>
 
             <section class="kg-quote-of-day" aria-label="Σαν σήμερα">
@@ -778,7 +778,7 @@
                     <footer id="kgQuoteAuthor"></footer>
                 </blockquote>
                 <p id="kgQuoteEl" class="kg-quote-el"></p>
-                <a id="kgQuoteSource" class="kg-quote-source" href="#" target="_blank" rel="noopener">Πηγή</a>
+                <div id="kgQuoteSource"></div>
             </section>
 
             <section id="content-sections" class="content-sections">
@@ -1075,9 +1075,9 @@
             const enEl = document.getElementById('kgQuoteEn');
             const authorEl = document.getElementById('kgQuoteAuthor');
             const elEl = document.getElementById('kgQuoteEl');
-            const sourceEl = document.getElementById('kgQuoteSource');
+            const sourceWrap = document.getElementById('kgQuoteSource');
 
-            if (!metaEl || !enEl || !authorEl || !elEl || !sourceEl) {
+            if (!metaEl || !enEl || !authorEl || !elEl || !sourceWrap) {
                 return;
             }
 
@@ -1089,7 +1089,7 @@
                 enEl.textContent = '';
                 authorEl.textContent = '';
                 elEl.textContent = '';
-                sourceEl.style.display = 'none';
+                sourceWrap.innerHTML = '';
                 return;
             }
 
@@ -1106,12 +1106,15 @@
             authorEl.textContent = todayQuote.author ? `— ${todayQuote.author}` : '';
             elEl.textContent = todayQuote.el ? `«${todayQuote.el}»` : '';
 
+            sourceWrap.innerHTML = '';
             if (todayQuote.source) {
-                sourceEl.href = todayQuote.source;
-                sourceEl.style.display = 'inline-block';
-            } else {
-                sourceEl.removeAttribute('href');
-                sourceEl.style.display = 'none';
+                const link = document.createElement('a');
+                link.className = 'kg-quote-source';
+                link.href = todayQuote.source;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                link.textContent = 'Πηγή';
+                sourceWrap.appendChild(link);
             }
         }
 
