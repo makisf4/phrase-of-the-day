@@ -1089,9 +1089,10 @@
             titleEl.textContent = onThisDayQuote
                 ? 'Σαν σήμερα'
                 : 'Διάσημο απόφθεγμα της ημέρας';
+            const fallbackMeta = 'Καθημερινό απόφθεγμα';
 
             if (!todayQuote) {
-                metaEl.textContent = 'Διάσημο απόφθεγμα της ημέρας';
+                metaEl.textContent = fallbackMeta;
                 enEl.textContent = '';
                 authorEl.textContent = '';
                 elEl.textContent = '';
@@ -1100,12 +1101,19 @@
             }
 
             if (onThisDayQuote) {
-                const metaParts = [];
-                if (todayQuote.year) metaParts.push(String(todayQuote.year));
-                if (todayQuote.context) metaParts.push(todayQuote.context);
-                metaEl.textContent = metaParts.length ? metaParts.join(' · ') : 'Σαν σήμερα';
+                const year = todayQuote.year ? String(todayQuote.year) : '';
+                const context = todayQuote.context || '';
+                if (year && context) {
+                    metaEl.textContent = `${year} · ${context}`;
+                } else if (year) {
+                    metaEl.textContent = year;
+                } else if (context) {
+                    metaEl.textContent = context;
+                } else {
+                    metaEl.textContent = '';
+                }
             } else {
-                metaEl.textContent = 'Διάσημο απόφθεγμα της ημέρας';
+                metaEl.textContent = fallbackMeta;
             }
 
             enEl.textContent = todayQuote.en ? `"${todayQuote.en}"` : '';
