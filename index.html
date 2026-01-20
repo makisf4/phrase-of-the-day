@@ -519,11 +519,13 @@
             margin-top: 0.65rem;
             font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.82);
-            text-decoration: none;
+            text-decoration: underline;
+            text-decoration-color: rgba(255, 255, 255, 0.45);
+            text-underline-offset: 0.2rem;
         }
 
         .kg-quote-source:hover {
-            text-decoration: underline;
+            text-decoration-color: rgba(255, 255, 255, 0.8);
         }
 
         .content-sections {
@@ -1116,7 +1118,7 @@
                 link.className = 'kg-quote-source';
                 link.href = todayQuote.source;
                 link.target = '_blank';
-                link.rel = 'noopener';
+                link.rel = 'noopener noreferrer';
                 link.textContent = 'Πηγή';
                 sourceWrap.appendChild(link);
             }
