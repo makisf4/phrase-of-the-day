@@ -465,6 +465,67 @@
             text-shadow: 0 1px 18px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
+        .kg-quote-of-day {
+            max-width: var(--max);
+            margin: 0 auto 2.75rem;
+            padding: clamp(1.5rem, 3vw, 2.25rem);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: calc(var(--radius) - 4px);
+            box-shadow: var(--shadow);
+            color: var(--text);
+            text-align: left;
+            line-height: 1.7;
+        }
+
+        .kg-quote-of-day h2 {
+            font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .kg-quote-meta {
+            margin: 0 0 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .kg-quote-of-day blockquote {
+            margin: 0 0 0.75rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--border);
+        }
+
+        .kg-quote-en {
+            margin: 0 0 0.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .kg-quote-of-day blockquote footer {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.78);
+        }
+
+        .kg-quote-el {
+            margin: 0.75rem 0 0;
+            font-size: 0.98rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .kg-quote-source {
+            display: inline-block;
+            margin-top: 0.65rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.78);
+            text-decoration: none;
+        }
+
+        .kg-quote-source:hover {
+            text-decoration: underline;
+        }
+
         .content-sections {
             max-width: var(--max);
             margin: 0 auto 4rem;
@@ -709,6 +770,17 @@
                 <p>Μια καθημερινή φράση που αλλάζει κάθε μέρα για όλους. Χωρίς motivation, χωρίς quotes, χωρίς horoscope. Μόνο μια ειρωνική ανάγνωση της καθημερινότητας.</p>
             </section>
 
+            <section class="kg-quote-of-day" aria-label="Σαν σήμερα">
+                <h2>Σαν σήμερα</h2>
+                <p id="kgQuoteMeta" class="kg-quote-meta"></p>
+                <blockquote>
+                    <p id="kgQuoteEn" class="kg-quote-en"></p>
+                    <footer id="kgQuoteAuthor"></footer>
+                </blockquote>
+                <p id="kgQuoteEl" class="kg-quote-el"></p>
+                <a id="kgQuoteSource" class="kg-quote-source" href="#" target="_blank" rel="noopener">Πηγή</a>
+            </section>
+
             <section id="content-sections" class="content-sections">
                 <div class="content-block">
                     <h2>Τι είναι η Φράση της Ημέρας που σε Περιγράφει;</h2>
@@ -773,6 +845,7 @@
 
     </div>
 
+    <script src="quotes.js"></script>
     <script>
         const PHRASES = [
             "Έκανες ό,τι μπορούσες. Απλώς όχι πολλά.",
@@ -915,6 +988,26 @@
             return `${year}-${month}-${day}`;
         }
 
+        function kgGetLocalDateKeyYYYYMMDD(d = new Date()) {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}${month}${day}`;
+        }
+
+        function kgGetLocalMMDD(d = new Date()) {
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${month}-${day}`;
+        }
+
+        function kgDayOfYearLocal(d = new Date()) {
+            const start = new Date(d.getFullYear(), 0, 1, 12);
+            const current = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
+            const msPerDay = 24 * 60 * 60 * 1000;
+            return Math.round((current - start) / msPerDay);
+        }
+
         function formatDateForDisplay(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -951,6 +1044,74 @@
                 const item = document.createElement('li');
                 item.textContent = `${formatShortDate(date)} — ${phrase}`;
                 list.appendChild(item);
+            }
+        }
+
+        function getDailyFamousQuote() {
+            const quotes = window.KG_FAMOUS_QUOTES;
+            if (!Array.isArray(quotes) || quotes.length === 0) {
+                return null;
+            }
+            const dayIndex = kgDayOfYearLocal();
+            return quotes[dayIndex % quotes.length];
+        }
+
+        function getOnThisDayQuote() {
+            const lookup = window.KG_ON_THIS_DAY_QUOTES;
+            if (!lookup || typeof lookup !== 'object') {
+                return null;
+            }
+            const mmdd = kgGetLocalMMDD();
+            const list = lookup[mmdd];
+            if (!Array.isArray(list) || list.length === 0) {
+                return null;
+            }
+            const dayIndex = kgDayOfYearLocal();
+            return list[dayIndex % list.length];
+        }
+
+        function renderOnThisDayQuote() {
+            const metaEl = document.getElementById('kgQuoteMeta');
+            const enEl = document.getElementById('kgQuoteEn');
+            const authorEl = document.getElementById('kgQuoteAuthor');
+            const elEl = document.getElementById('kgQuoteEl');
+            const sourceEl = document.getElementById('kgQuoteSource');
+
+            if (!metaEl || !enEl || !authorEl || !elEl || !sourceEl) {
+                return;
+            }
+
+            const onThisDayQuote = getOnThisDayQuote();
+            const todayQuote = onThisDayQuote || getDailyFamousQuote();
+
+            if (!todayQuote) {
+                metaEl.textContent = 'Διάσημο απόφθεγμα της ημέρας';
+                enEl.textContent = '';
+                authorEl.textContent = '';
+                elEl.textContent = '';
+                sourceEl.style.display = 'none';
+                return;
+            }
+
+            if (onThisDayQuote) {
+                const metaParts = [];
+                if (todayQuote.year) metaParts.push(String(todayQuote.year));
+                if (todayQuote.context) metaParts.push(todayQuote.context);
+                metaEl.textContent = metaParts.length ? metaParts.join(' · ') : 'Σαν σήμερα';
+            } else {
+                metaEl.textContent = 'Διάσημο απόφθεγμα της ημέρας';
+            }
+
+            enEl.textContent = todayQuote.en ? `"${todayQuote.en}"` : '';
+            authorEl.textContent = todayQuote.author ? `— ${todayQuote.author}` : '';
+            elEl.textContent = todayQuote.el ? `«${todayQuote.el}»` : '';
+
+            if (todayQuote.source) {
+                sourceEl.href = todayQuote.source;
+                sourceEl.style.display = 'inline-block';
+            } else {
+                sourceEl.removeAttribute('href');
+                sourceEl.style.display = 'none';
             }
         }
 
@@ -1399,6 +1560,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initBackground();
             renderPhrase();
+            renderOnThisDayQuote();
             renderRecentPhrases(7);
             
             // Initialize interactive UI (event delegation)
